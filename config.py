@@ -15,8 +15,16 @@ else:
 class Config:
     """Configurações centrais do PlantCare AI / Agrônomo Inteligente."""
     
-    # Chave de API do Google Gemini
-    GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "").strip()
+    # Chave de API do Google Gemini (compatível com .env local e st.secrets do Streamlit Cloud)
+    _api_key = os.getenv("GEMINI_API_KEY", "").strip()
+    if not _api_key:
+        try:
+            import streamlit as st
+            if hasattr(st, "secrets") and "GEMINI_API_KEY" in st.secrets:
+                _api_key = str(st.secrets["GEMINI_API_KEY"]).strip()
+        except Exception:
+            pass
+    GEMINI_API_KEY = _api_key
     
     # Modelos Gemini preferenciais em ordem de fallback
     PRIMARY_GEMINI_MODEL = os.getenv("PRIMARY_GEMINI_MODEL", "gemini-3.8-flash")
