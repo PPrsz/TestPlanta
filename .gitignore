@@ -1,0 +1,30 @@
+# Ambientes virtuais
+.venv/
+venv/
+ENV/
+env/
+
+# Arquivos de ambiente e segredos (NUNCA SUBIR)
+.env
+.env.local
+
+# Caches do Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Dados de usuário e banco local
+data/uploads/*
+!data/uploads/.gitkeep
+data/*.db
+data/*.sqlite3
+
+# IDEs e editores
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
