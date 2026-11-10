@@ -13,6 +13,8 @@ from services.database_service import DatabaseService
 from ui.styles import CUSTOM_CSS
 from ui.components import (
     render_hero,
+    render_metric_cards,
+    render_home_info_cards,
     render_quality_audit,
     render_teachable_machine_panel,
     render_diagnosis_view,
@@ -146,37 +148,13 @@ if page == "🏠 Início":
     healthy_count = sum(1 for p in plants if "saud" in (p.get("health_status") or "").lower())
     attention_count = total_plants - healthy_count
 
-    col_m1, col_m2, col_m3, col_m4 = st.columns(4)
-    with col_m1:
-        st.markdown(f"""
-        <div class="metric-box">
-            <div class="metric-label">Plantas Cadastradas</div>
-            <div class="metric-value">{total_plants}</div>
-        </div>
-        """, unsafe_allow_html=True)
-    with col_m2:
-        st.markdown(f"""
-        <div class="metric-box">
-            <div class="metric-label">Aparentemente Saudáveis</div>
-            <div class="metric-value" style="color: var(--success);">{healthy_count}</div>
-        </div>
-        """, unsafe_allow_html=True)
-    with col_m3:
-        st.markdown(f"""
-        <div class="metric-box">
-            <div class="metric-label">Sob Atenção / Tratamento</div>
-            <div class="metric-value" style="color: #f59e0b;">{attention_count}</div>
-        </div>
-        """, unsafe_allow_html=True)
-    with col_m4:
-        st.markdown(f"""
-        <div class="metric-box">
-            <div class="metric-label">Diagnósticos Realizados</div>
-            <div class="metric-value" style="color: var(--primary-light);">{len(recent_diagnoses)}</div>
-        </div>
-        """, unsafe_allow_html=True)
+    render_metric_cards(
+        total_plants=total_plants,
+        healthy_count=healthy_count,
+        attention_count=attention_count,
+        diagnoses_count=len(recent_diagnoses),
+    )
 
-    st.write("")
     col_hero_cta1, col_hero_cta2 = st.columns([1.5, 1])
     with col_hero_cta1:
         if st.button("🔬 Analisar Minha Planta Agora (Fazer Novo Teste)", type="primary", use_container_width=True, key="btn_hero_novo_teste"):
@@ -184,35 +162,8 @@ if page == "🏠 Início":
     with col_hero_cta2:
         if st.button("🌿 Ver Meu Jardim & Acompanhamento", use_container_width=True, key="btn_hero_ver_jardim"):
             switch_page("🌿 Meu Jardim & Acompanhamento")
-    st.write("")
-    
-    col_cta1, col_cta2 = st.columns([1.8, 1.2])
-    with col_cta1:
-        st.markdown("""
-        <div class="modern-card">
-            <div class="card-title">🔍 Como Funciona a Assistente Inteligente</div>
-            <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6;">
-                O <b>PlantCare AI</b> combina duas camadas complementares de inteligência artificial para máxima precisão:
-            </p>
-            <ul style="color: var(--text-muted); font-size: 0.92rem; line-height: 1.7;">
-                <li><b style="color: var(--text);">1. Classificador Local (Google Teachable Machine):</b> Avalia padrões visuais aprendidos localmente em frações de segundo, identificando sinais de alerta.</li>
-                <li><b style="color: var(--text);">2. Raciocínio Botânico (Google Gemini):</b> Analisa a foto em alta definição, interpreta o modelo local, identifica a espécie botânica, investiga causas subjacentes e formula um tratamento seguro passo a passo.</li>
-                <li><b style="color: var(--text);">3. Diferenciação Científica:</b> Separa sintomas observados (como folhas amarelas) de causas reais (como rega incorreta ou fungos), sem suposições precipitadas.</li>
-            </ul>
-        </div>
-        """, unsafe_allow_html=True)
-        
-    with col_cta2:
-        st.markdown("""
-        <div class="modern-card" style="border-color: rgba(56, 189, 248, 0.3); background: rgba(56, 189, 248, 0.05);">
-            <div class="card-title" style="color: var(--secondary);">💡 Dicas de Cuidados Botânicos</div>
-            <p style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.6;">
-                • <b style="color: var(--text);">Drenagem é vida:</b> Mais plantas morrem por excesso de rega (asfixia radicular) do que por sede.<br><br>
-                • <b style="color: var(--text);">Observe a luz:</b> Luz indireta brilhante é o ambiente ideal para a maioria das folhagens domésticas.<br><br>
-                • <b style="color: var(--text);">Poda profilática:</b> Remova folhas doentes com tesoura esterilizada para não infectar galhos sadios.
-            </p>
-        </div>
-        """, unsafe_allow_html=True)
+
+    render_home_info_cards()
 
     # Últimos Diagnósticos Registrados
     if recent_diagnoses:

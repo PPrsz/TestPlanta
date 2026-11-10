@@ -37,6 +37,14 @@ def render_hero(
         </div>
         """
 
+    # ── enhanced avatar glow rings ─────────────────────────────────────────
+    extra_rings = ""
+    if show_avatar:
+        extra_rings = """
+        <div class="avatar-ring ring-3"></div>
+        <div class="pulse-ring pulse-ring-2"></div>
+        """
+
     hero_html = f"""<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -56,122 +64,147 @@ def render_hero(
 html,body{{background:transparent;color:var(--text);font-family:'Inter',sans-serif;overflow:hidden}}
 .hero{{
   display:grid;
-  grid-template-columns:1.4fr 1fr;
+  grid-template-columns:1.35fr 1fr;
   align-items:center;
-  gap:2.5rem;
-  padding:2rem 2.4rem 2rem;
+  gap:2rem;
+  padding:2.2rem 2.6rem 2.2rem;
   position:relative;
-  background:linear-gradient(135deg,rgba(22,22,31,0.75) 0%,rgba(18,18,26,0.9) 100%);
-  border:1px solid var(--border);
-  border-radius:22px;
-  backdrop-filter:blur(25px);
-  box-shadow:0 25px 50px -12px rgba(0,0,0,0.5);
+  background:linear-gradient(135deg,rgba(22,22,31,0.8) 0%,rgba(14,14,22,0.92) 100%);
+  border:1px solid rgba(167,139,250,0.15);
+  border-radius:24px;
+  backdrop-filter:blur(28px);
+  box-shadow:0 30px 60px -15px rgba(0,0,0,0.6),inset 0 1px 0 rgba(255,255,255,0.05);
   overflow:hidden;
 }}
-/* gradient text */
+/* shimmer border */
+.hero::before{{
+  content:'';position:absolute;inset:0;border-radius:24px;
+  background:linear-gradient(135deg,rgba(167,139,250,.18) 0%,rgba(56,189,248,.1) 50%,rgba(244,114,182,.12) 100%);
+  mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+  -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;
+  padding:1px;pointer-events:none;
+}}
 .gradient-text{{
   background:var(--gradient);
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;
   background-clip:text;display:inline;
 }}
-/* badge */
 .badge{{
   display:inline-flex;align-items:center;gap:.45rem;
-  background:rgba(167,139,250,.12);border:1px solid rgba(167,139,250,.28);
-  color:var(--primary-light);padding:.35rem 1rem;border-radius:999px;
-  font-size:.83rem;font-weight:500;margin-bottom:1.1rem;
+  background:rgba(167,139,250,.1);border:1px solid rgba(167,139,250,.25);
+  color:var(--primary-light);padding:.38rem 1.05rem;border-radius:999px;
+  font-size:.82rem;font-weight:500;margin-bottom:1.2rem;letter-spacing:.01em;
 }}
 .badge-dot{{
   width:7px;height:7px;background:var(--success);border-radius:50%;
-  box-shadow:0 0 8px var(--success);
+  box-shadow:0 0 10px var(--success);
   animation:pulse-dot 2s infinite;
 }}
-@keyframes pulse-dot{{0%,100%{{opacity:1;transform:scale(1)}}50%{{opacity:.55;transform:scale(1.35)}}}}
-/* title */
+@keyframes pulse-dot{{0%,100%{{opacity:1;transform:scale(1)}}50%{{opacity:.5;transform:scale(1.4)}}}}
 h1{{
   font-family:'Space Grotesk',sans-serif;
-  font-size:clamp(1.75rem,3.5vw,2.8rem);
-  font-weight:800;line-height:1.15;letter-spacing:-.03em;
-  margin-bottom:.9rem;color:var(--text);
+  font-size:clamp(1.8rem,3.8vw,2.9rem);
+  font-weight:800;line-height:1.13;letter-spacing:-.035em;
+  margin-bottom:.95rem;color:var(--text);
 }}
-p.desc{{color:var(--text-muted);font-size:1rem;line-height:1.65;max-width:480px}}
+p.desc{{color:var(--text-muted);font-size:1.02rem;line-height:1.68;max-width:460px}}
 
 /* ── hero visual ── */
 .hero-visual{{
   position:relative;display:flex;align-items:center;justify-content:center;
-  height:280px;
+  height:290px;
 }}
-/* orbs */
-.orb{{position:absolute;border-radius:50%;filter:blur(55px);opacity:.5;animation:orb-float 8s ease-in-out infinite;pointer-events:none}}
-.orb-1{{width:220px;height:220px;background:#a78bfa;top:5%;left:10%}}
-.orb-2{{width:160px;height:160px;background:#38bdf8;bottom:10%;right:8%;animation-delay:-3s}}
-.orb-3{{width:130px;height:130px;background:#f472b6;top:38%;right:25%;animation-delay:-5s}}
+.orb{{position:absolute;border-radius:50%;filter:blur(60px);opacity:.45;animation:orb-float 9s ease-in-out infinite;pointer-events:none}}
+.orb-1{{width:230px;height:230px;background:#a78bfa;top:0%;left:5%}}
+.orb-2{{width:170px;height:170px;background:#38bdf8;bottom:5%;right:5%;animation-delay:-3.5s}}
+.orb-3{{width:140px;height:140px;background:#f472b6;top:35%;right:22%;animation-delay:-6s;opacity:.35}}
 @keyframes orb-float{{
   0%,100%{{transform:translate(0,0) scale(1)}}
-  33%{{transform:translate(18px,-25px) scale(1.06)}}
-  66%{{transform:translate(-12px,18px) scale(.94)}}
+  33%{{transform:translate(16px,-28px) scale(1.07)}}
+  66%{{transform:translate(-14px,16px) scale(.93)}}
 }}
-/* avatar */
+/* avatar container */
 .avatar-container{{position:relative;z-index:2}}
+/* three rings */
 .avatar-ring{{
-  position:absolute;inset:-20px;
-  border:2px solid rgba(167,139,250,.3);border-radius:50%;
-  animation:spin-slow 20s linear infinite;
+  position:absolute;border-radius:50%;animation:spin-slow 20s linear infinite;
+}}
+.avatar-ring:nth-child(1){{
+  inset:-18px;border:1.5px solid rgba(167,139,250,.35);
 }}
 .avatar-ring.ring-2{{
-  inset:-40px;border-color:rgba(56,189,248,.2);
-  animation-direction:reverse;animation-duration:30s;
+  inset:-36px;border:1.5px solid rgba(56,189,248,.22);
+  animation-direction:reverse;animation-duration:28s;
+}}
+.avatar-ring.ring-3{{
+  inset:-56px;border:1px dashed rgba(244,114,182,.15);
+  animation-duration:45s;
 }}
 @keyframes spin-slow{{to{{transform:rotate(360deg)}}}}
+/* avatar body */
 .avatar{{
-  width:160px;height:160px;
-  background:linear-gradient(145deg,#1e1e2e,#2a2a3d);
+  width:168px;height:168px;
+  background:radial-gradient(circle at 35% 30%,#2d2042,#1a1a2e 60%,#0d0d18);
   border-radius:50%;display:flex;align-items:center;justify-content:center;
-  box-shadow:0 0 0 4px rgba(167,139,250,.2),0 20px 60px rgba(0,0,0,.4),inset 0 0 40px rgba(167,139,250,.12);
+  position:relative;
+  box-shadow:
+    0 0 0 3px rgba(167,139,250,.25),
+    0 0 30px rgba(167,139,250,.2),
+    0 24px 60px rgba(0,0,0,.5),
+    inset 0 0 50px rgba(167,139,250,.08);
   animation:avatar-float 6s ease-in-out infinite;
 }}
-@keyframes avatar-float{{0%,100%{{transform:translateY(0)}}50%{{transform:translateY(-10px)}}}}
-.avatar.speaking{{animation:speak-bounce .6s ease infinite,avatar-float 6s ease-in-out infinite}}
-@keyframes speak-bounce{{0%,100%{{transform:scale(1)}}50%{{transform:scale(1.04)}}}}
-/* face */
-.avatar-face{{position:relative;width:60%;height:50%}}
-.eye{{
-  position:absolute;width:16px;height:16px;background:#e2e8f0;
-  border-radius:50%;top:20%;box-shadow:inset 0 -2px 0 rgba(0,0,0,.15);transition:transform .15s ease;
+/* glow halo behind avatar */
+.avatar::before{{
+  content:'';position:absolute;inset:-8px;border-radius:50%;
+  background:radial-gradient(circle,rgba(167,139,250,.18) 0%,transparent 70%);
+  animation:glow-pulse 3s ease-in-out infinite;
 }}
-.eye.left{{left:12%}}.eye.right{{right:12%}}
+@keyframes glow-pulse{{0%,100%{{opacity:.6}}50%{{opacity:1}}}}
+@keyframes avatar-float{{0%,100%{{transform:translateY(0)}}50%{{transform:translateY(-12px)}}}}
+.avatar.speaking{{box-shadow:0 0 0 3px rgba(167,139,250,.5),0 0 40px rgba(167,139,250,.35),0 24px 60px rgba(0,0,0,.5),inset 0 0 50px rgba(167,139,250,.12)}}
+/* face */
+.avatar-face{{position:relative;width:58%;height:48%}}
+.eye{{
+  position:absolute;width:17px;height:17px;background:#e8f0ff;
+  border-radius:50%;top:18%;
+  box-shadow:0 0 8px rgba(167,139,250,.5),inset 0 -2px 0 rgba(0,0,0,.2);
+  transition:transform .12s ease;
+}}
+.eye.left{{left:11%}}.eye.right{{right:11%}}
 .eye::after{{
-  content:'';position:absolute;width:7px;height:7px;background:#1e1e2e;
+  content:'';position:absolute;width:8px;height:8px;background:#1a1a2e;
   border-radius:50%;top:50%;left:50%;transform:translate(-50%,-50%);
+  box-shadow:1px 1px 0 rgba(255,255,255,.15);
 }}
 .mouth{{
-  position:absolute;bottom:8%;left:50%;transform:translateX(-50%);
-  width:26px;height:11px;border:2.5px solid #e2e8f0;border-top:none;
-  border-radius:0 0 18px 18px;transition:all .3s ease;
+  position:absolute;bottom:6%;left:50%;transform:translateX(-50%);
+  width:27px;height:12px;border:2.5px solid #e8f0ff;border-top:none;
+  border-radius:0 0 20px 20px;transition:all .3s ease;
+  box-shadow:0 2px 8px rgba(167,139,250,.3);
 }}
-.avatar.happy .mouth{{width:30px;height:14px;border-radius:0 0 28px 28px}}
+.avatar.happy .mouth{{width:32px;height:15px;border-radius:0 0 30px 30px}}
 .avatar.speaking .mouth{{animation:mouth-talk .35s ease infinite alternate}}
-@keyframes mouth-talk{{from{{height:7px;width:22px}}to{{height:15px;width:28px;border-radius:0 0 36px 36px}}}}
-/* pulse ring */
+@keyframes mouth-talk{{from{{height:7px;width:22px}}to{{height:16px;width:30px;border-radius:0 0 38px 38px}}}}
+/* pulse rings */
 .pulse-ring{{
-  position:absolute;inset:-10px;
-  border:2px solid rgba(167,139,250,.4);border-radius:50%;
-  animation:pulse-expand 2.5s ease-out infinite;
+  position:absolute;border-radius:50%;border:2px solid rgba(167,139,250,.45);
+  animation:pulse-expand 2.8s ease-out infinite;
 }}
-@keyframes pulse-expand{{0%{{transform:scale(1);opacity:.6}}100%{{transform:scale(1.45);opacity:0}}}}
+.pulse-ring:nth-of-type(1){{inset:-8px}}
+.pulse-ring-2{{inset:-8px;animation-delay:1.4s;border-color:rgba(56,189,248,.3)}}
+@keyframes pulse-expand{{0%{{transform:scale(1);opacity:.65}}100%{{transform:scale(1.5);opacity:0}}}}
 /* particles */
-.particles{{position:absolute;inset:0;pointer-events:none;overflow:hidden;border-radius:22px}}
-.particle{{
-  position:absolute;border-radius:50%;opacity:.35;
-  animation:float-particle 14s infinite linear;
-}}
+.particles{{position:absolute;inset:0;pointer-events:none;overflow:hidden;border-radius:24px}}
+.particle{{position:absolute;border-radius:50%;animation:float-particle 15s infinite linear}}
 @keyframes float-particle{{
-  0%{{transform:translateY(100%) scale(0);opacity:0}}
-  10%{{opacity:.4}}90%{{opacity:.15}}
-  100%{{transform:translateY(-80px) scale(1);opacity:0}}
+  0%{{transform:translateY(110%) scale(0);opacity:0}}
+  8%{{opacity:.5}}88%{{opacity:.12}}
+  100%{{transform:translateY(-90px) scale(1);opacity:0}}
 }}
-@keyframes fadeUp{{from{{opacity:0;transform:translateY(24px)}}to{{opacity:1;transform:translateY(0)}}}}
-.hero-content{{animation:fadeUp .7s ease both}}
+@keyframes fadeUp{{from{{opacity:0;transform:translateY(28px)}}to{{opacity:1;transform:translateY(0)}}}}
+.hero-content{{animation:fadeUp .75s ease both}}
 </style>
 </head>
 <body>
@@ -188,45 +221,293 @@ p.desc{{color:var(--text-muted);font-size:1rem;line-height:1.65;max-width:480px}
   {avatar_section}
 </div>
 <script>
-// Particles
 (function(){{
   const c=document.getElementById('particles');
   if(!c)return;
-  const colors=['#a78bfa','#38bdf8','#f472b6','#c4b5fd'];
-  for(let i=0;i<28;i++){{
+  const colors=['#a78bfa','#38bdf8','#f472b6','#c4b5fd','#34d399'];
+  for(let i=0;i<32;i++){{
     const p=document.createElement('div');
     p.className='particle';
     p.style.left=Math.random()*100+'%';
-    p.style.animationDelay=Math.random()*14+'s';
-    p.style.animationDuration=(10+Math.random()*10)+'s';
-    const sz=1.5+Math.random()*3+'px';
+    p.style.animationDelay=Math.random()*15+'s';
+    p.style.animationDuration=(9+Math.random()*12)+'s';
+    const sz=1+Math.random()*3.5+'px';
     p.style.width=sz;p.style.height=sz;
-    p.style.background=colors[Math.floor(Math.random()*4)];
+    p.style.background=colors[Math.floor(Math.random()*colors.length)];
+    p.style.opacity=.2+Math.random()*.3;
     c.appendChild(p);
   }}
 }})();
-
-// Blink eyes
 function blinkEyes(){{
-  document.querySelectorAll('.eye').forEach(e=>e.style.transform='scaleY(0.08)');
-  setTimeout(()=>document.querySelectorAll('.eye').forEach(e=>e.style.transform=''),140);
+  document.querySelectorAll('.eye').forEach(e=>e.style.transform='scaleY(0.07)');
+  setTimeout(()=>document.querySelectorAll('.eye').forEach(e=>e.style.transform=''),130);
 }}
-setInterval(blinkEyes, 3200+Math.random()*1800);
-
-// Idle avatar expression cycle
+setInterval(blinkEyes,2800+Math.random()*2200);
 const av=document.getElementById('heroAvatar');
 if(av){{
   setInterval(()=>{{
     av.classList.add('happy');
-    setTimeout(()=>av.classList.remove('happy'),1200);
-  }}, 7000);
+    setTimeout(()=>av.classList.remove('happy'),1400);
+  }},6500);
+  setInterval(()=>{{
+    av.classList.add('speaking');
+    setTimeout(()=>av.classList.remove('speaking'),900+Math.random()*600);
+  }},11000);
 }}
 </script>
 </body>
 </html>"""
 
-    height = 240 if show_avatar else 160
+    height = 268 if show_avatar else 168
     components.html(hero_html, height=height, scrolling=False)
+
+def render_metric_cards(
+    total_plants: int,
+    healthy_count: int,
+    attention_count: int,
+    diagnoses_count: int,
+):
+    """
+    Renderiza os 4 cards de métricas com ícones SVG, fade-in staggerado,
+    hover com elevação e glow — via components.v1.html para animações reais.
+    """
+    is_empty = total_plants == 0
+
+    # valores e cores
+    metrics = [
+        {
+            "icon": '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>',
+            "label": "Plantas Cadastradas",
+            "value": str(total_plants),
+            "color": "#c4b5fd",
+            "glow": "rgba(167,139,250,0.3)",
+            "bg": "rgba(167,139,250,0.08)",
+        },
+        {
+            "icon": '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 21.593c-5.63-5.539-11-10.297-11-14.402C1 3.335 4.248 1 7.5 1c1.998 0 4.049.986 5.5 2.717C14.451 1.986 16.502 1 18.5 1 21.752 1 25 3.335 25 7.19c0 4.106-5.37 8.863-11 14.402"/></svg>',
+            "label": "Aparentemente Saudáveis",
+            "value": str(healthy_count),
+            "color": "#34d399",
+            "glow": "rgba(52,211,153,0.3)",
+            "bg": "rgba(52,211,153,0.08)",
+        },
+        {
+            "icon": '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>',
+            "label": "Sob Atenção / Tratamento",
+            "value": str(attention_count),
+            "color": "#f59e0b",
+            "glow": "rgba(245,158,11,0.3)",
+            "bg": "rgba(245,158,11,0.08)",
+        },
+        {
+            "icon": '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M9 17V13M12 17V9M15 17v-4"/></svg>',
+            "label": "Diagnósticos Realizados",
+            "value": str(diagnoses_count),
+            "color": "#38bdf8",
+            "glow": "rgba(56,189,248,0.3)",
+            "bg": "rgba(56,189,248,0.08)",
+        },
+    ]
+
+    cards_html = ""
+    for i, m in enumerate(metrics):
+        empty_note = ""
+        if is_empty and i == 0:
+            empty_note = "<p class='empty-hint'>Faça sua primeira análise ✨</p>"
+        cards_html += f"""
+        <div class="metric-card" style="--delay:{i*0.1}s;--color:{m['color']};--glow:{m['glow']};--bg:{m['bg']};">
+          <div class="metric-icon">{m['icon']}</div>
+          <div class="metric-value{'  zero' if m['value'] == '0' else ''}">{m['value']}</div>
+          <div class="metric-label">{m['label']}</div>
+          {empty_note}
+        </div>"""
+
+    empty_state_html = ""
+    if is_empty:
+        empty_state_html = """
+        <div class="empty-state">
+          <div class="empty-icon">🌱</div>
+          <h3>Bem-vindo ao PlantCare AI!</h3>
+          <p>Seu jardim ainda está vazio. Faça a primeira análise para começar a acompanhar a saúde das suas plantas.</p>
+        </div>"""
+
+    full_html = f"""<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@700;800&display=swap" rel="stylesheet"/>
+<style>
+*{{margin:0;padding:0;box-sizing:border-box}}
+body{{
+  font-family:'Inter',sans-serif;
+  background:transparent;
+  padding:4px 2px 8px;
+}}
+.grid{{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:14px;
+}}
+.metric-card{{
+  background:linear-gradient(145deg,#12121a,#0e0e17);
+  border:1px solid rgba(255,255,255,0.07);
+  border-radius:18px;
+  padding:1.3rem 1.1rem 1.1rem;
+  text-align:center;
+  cursor:default;
+  position:relative;
+  overflow:hidden;
+  opacity:0;
+  transform:translateY(20px);
+  animation:fadeUp .55s ease var(--delay) forwards;
+  transition:transform .3s cubic-bezier(.4,0,.2,1),
+             box-shadow .3s ease,
+             border-color .3s ease;
+}}
+.metric-card::before{{
+  content:'';position:absolute;inset:0;border-radius:18px;
+  background:var(--bg);
+  opacity:0;transition:opacity .3s ease;
+}}
+.metric-card:hover{{
+  transform:translateY(-6px) scale(1.015);
+  border-color:var(--color);
+  box-shadow:0 16px 40px var(--glow),0 4px 12px rgba(0,0,0,.3);
+}}
+.metric-card:hover::before{{opacity:1}}
+.metric-icon{{
+  display:flex;align-items:center;justify-content:center;
+  width:44px;height:44px;margin:0 auto 10px;
+  background:var(--bg);border-radius:12px;
+  border:1px solid var(--color);
+  color:var(--color);
+  transition:transform .3s ease,box-shadow .3s ease;
+}}
+.metric-card:hover .metric-icon{{
+  transform:scale(1.12);
+  box-shadow:0 0 16px var(--glow);
+}}
+.metric-icon svg{{width:22px;height:22px;stroke:var(--color)}}
+.metric-value{{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:2.2rem;font-weight:800;
+  color:var(--color);line-height:1;
+  margin-bottom:5px;
+  position:relative;z-index:1;
+  transition:transform .3s ease;
+}}
+.metric-card:hover .metric-value{{transform:scale(1.05)}}
+.metric-value.zero{{color:rgba(148,163,184,.4)}}
+.metric-label{{
+  font-size:.72rem;font-weight:600;
+  text-transform:uppercase;letter-spacing:.06em;
+  color:#64748b;position:relative;z-index:1;
+}}
+.empty-hint{{
+  font-size:.72rem;color:var(--color);opacity:.7;
+  margin-top:5px;position:relative;z-index:1;
+  animation:pulse-hint 2s ease-in-out infinite;
+}}
+@keyframes pulse-hint{{0%,100%{{opacity:.5}}50%{{opacity:.9}}}}
+/* empty state */
+.empty-state{{
+  margin-top:16px;
+  background:linear-gradient(135deg,rgba(167,139,250,.06) 0%,rgba(56,189,248,.04) 100%);
+  border:1px dashed rgba(167,139,250,.25);
+  border-radius:18px;padding:1.8rem 1.5rem;
+  text-align:center;
+  animation:fadeUp .6s ease .45s both;
+}}
+.empty-icon{{font-size:2.5rem;margin-bottom:.7rem;animation:bounce 2.5s ease-in-out infinite}}
+@keyframes bounce{{0%,100%{{transform:translateY(0)}}50%{{transform:translateY(-8px)}}}}
+.empty-state h3{{
+  font-family:'Space Grotesk',sans-serif;font-size:1.1rem;font-weight:700;
+  color:#c4b5fd;margin-bottom:.5rem;
+}}
+.empty-state p{{font-size:.85rem;color:#64748b;line-height:1.55;max-width:380px;margin:0 auto}}
+@keyframes fadeUp{{from{{opacity:0;transform:translateY(20px)}}to{{opacity:1;transform:translateY(0)}}}}
+</style>
+</head>
+<body>
+  <div class="grid">{cards_html}</div>
+  {empty_state_html}
+</body>
+</html>"""
+
+    height = 290 if is_empty else 148
+    components.html(full_html, height=height, scrolling=False)
+
+
+def render_home_info_cards():
+    """
+    Renderiza os dois cards informativos da home ('Como Funciona' + 'Dicas')
+    com fade-in e hover animados via components.v1.html.
+    """
+    html = """<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet"/>
+<style>
+*{{margin:0;padding:0;box-sizing:border-box}}
+body{{font-family:'Inter',sans-serif;background:transparent;padding:4px 2px 6px}}
+.grid{{display:grid;grid-template-columns:1.6fr 1fr;gap:16px;align-items:start}}
+.card{{
+  background:#16161f;
+  border:1px solid rgba(255,255,255,0.07);
+  border-radius:20px;padding:1.5rem 1.6rem;
+  opacity:0;transform:translateY(18px);
+  animation:fadeUp .55s ease var(--d,0s) forwards;
+  transition:transform .3s ease,border-color .3s ease,box-shadow .3s ease;
+  position:relative;overflow:hidden;
+}}
+.card::after{{
+  content:'';position:absolute;inset:0;border-radius:20px;
+  background:var(--accent-bg,rgba(167,139,250,.04));
+  opacity:0;transition:opacity .3s;
+}}
+.card:hover{{transform:translateY(-5px);border-color:var(--accent,rgba(167,139,250,.35));box-shadow:0 14px 36px var(--glow,rgba(167,139,250,.12))}}
+.card:hover::after{{opacity:1}}
+.card-title{{
+  font-family:'Space Grotesk',sans-serif;font-size:1.05rem;font-weight:700;
+  color:#f1f5f9;margin-bottom:.9rem;padding-bottom:.7rem;
+  border-bottom:1px solid rgba(255,255,255,.07);
+  display:flex;align-items:center;gap:.5rem;
+}}
+.card-title .icon{{font-size:1.15rem}}
+p{{color:#64748b;font-size:.88rem;line-height:1.65;position:relative;z-index:1}}
+ul{{color:#64748b;font-size:.87rem;line-height:1.75;padding-left:0;list-style:none;position:relative;z-index:1}}
+ul li{{padding-left:1rem;position:relative;margin-bottom:.25rem}}
+ul li::before{{content:'›';position:absolute;left:0;color:#a78bfa;font-weight:700}}
+ul li b{{color:#c4b5fd}}
+.tip{{margin-bottom:.6rem;position:relative;z-index:1;display:flex;gap:.5rem;font-size:.87rem;color:#64748b;line-height:1.5}}
+.tip b{{color:#38bdf8}}
+.tip-icon{{flex-shrink:0;font-size:1rem}}
+@keyframes fadeUp{{from{{opacity:0;transform:translateY(18px)}}to{{opacity:1;transform:translateY(0)}}}}
+</style>
+</head>
+<body>
+<div class="grid">
+  <div class="card" style="--d:0s;--accent:rgba(167,139,250,.4);--glow:rgba(167,139,250,.12)">
+    <div class="card-title"><span class="icon">🔍</span> Como Funciona a Assistente Inteligente</div>
+    <p style="margin-bottom:.8rem">O <b style="color:#c4b5fd">PlantCare AI</b> combina duas camadas de IA para máxima precisão diagnóstica:</p>
+    <ul>
+      <li><b>Classificador Local (Teachable Machine):</b> Avalia padrões visuais em milissegundos, identificando sinais de alerta imediatamente.</li>
+      <li><b>Raciocínio Botânico (Google Gemini):</b> Analisa a foto em alta definição, identifica a espécie, investiga causas e gera o plano de tratamento.</li>
+      <li><b>Diferenciação Científica:</b> Separa sintomas de causas reais sem suposições precipitadas — diagnóstico responsável.</li>
+    </ul>
+  </div>
+  <div class="card" style="--d:.12s;--accent:rgba(56,189,248,.4);--glow:rgba(56,189,248,.1);--accent-bg:rgba(56,189,248,.03)">
+    <div class="card-title" style="color:#38bdf8"><span class="icon">💡</span> Dicas Botânicas</div>
+    <div class="tip"><span class="tip-icon">💧</span><span><b>Drenagem é vida:</b> Mais plantas morrem por excesso de rega do que por sede. Cheque o solo antes de regar.</span></div>
+    <div class="tip"><span class="tip-icon">☀️</span><span><b>Observe a luz:</b> Luz indireta brilhante é ideal para a maioria das folhagens domésticas.</span></div>
+    <div class="tip"><span class="tip-icon">✂️</span><span><b>Poda profilática:</b> Remova folhas doentes com tesoura esterilizada para proteger os galhos sadios.</span></div>
+  </div>
+</div>
+</body>
+</html>"""
+    components.html(html, height=240, scrolling=False)
+
 
 def render_quality_audit(audit: Dict[str, Any]):
     """Renderiza a avaliação de qualidade fotográfica antes da inferência."""
