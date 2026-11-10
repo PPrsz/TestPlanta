@@ -557,7 +557,7 @@ ul li b{
 </html>"""
     
     # Altura expandida para 320 pixels para garantir que nenhum texto fique cortado embaixo
-    components.html(html, height=320, scrolling=False)
+    components.html(html, height=420, scrolling=False)
 
 
 def render_quality_audit(audit: Dict[str, Any]):
