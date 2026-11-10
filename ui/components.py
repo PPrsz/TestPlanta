@@ -434,7 +434,7 @@ body{{
 </body>
 </html>"""
 
-    height = 290 if is_empty else 148
+    height = 360 if is_empty else 200
     components.html(full_html, height=height, scrolling=False)
 
 
