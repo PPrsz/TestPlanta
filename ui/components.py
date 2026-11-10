@@ -361,9 +361,19 @@ def render_floating_chat(gemini_service, current_analysis: Optional[Dict[str, An
 def _send_chat_message(text: str, gemini_service, context: Optional[str] = None):
     """Envia a mensagem ao Gemini e anexa a resposta no histórico."""
     st.session_state.chat_messages.append({"role": "user", "content": text})
-    answer = gemini_service.chat(
-        user_message=text,
-        chat_history=st.session_state.chat_messages,
-        context=context
-    )
+    
+    # Garantir que o serviço esteja atualizado e possua o método chat
+    if not hasattr(gemini_service, "chat"):
+        from services.gemini_service import GeminiPlantDoctorService
+        gemini_service = GeminiPlantDoctorService()
+
+    try:
+        answer = gemini_service.chat(
+            user_message=text,
+            chat_history=st.session_state.chat_messages,
+            context=context
+        )
+    except Exception as e:
+        answer = f"⚠️ Não foi possível obter resposta no momento: {str(e)}"
+
     st.session_state.chat_messages.append({"role": "assistant", "content": answer})

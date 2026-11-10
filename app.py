@@ -41,7 +41,6 @@ def get_db():
 def get_tm_service():
     return TeachableMachineService()
 
-@st.cache_resource
 def get_gemini_service():
     return GeminiPlantDoctorService()
 
