@@ -1,54 +1,232 @@
 import streamlit as st
+import streamlit.components.v1 as components
 from typing import Dict, Any, List, Optional
 from PIL import Image
+
 
 def render_hero(
     title: str = "Conheça o <span class=\"gradient-text\">PlantCare AI</span>",
     subtitle: str = "Sua assistente inteligente especializada no diagnóstico e recuperação da saúde vegetal com IA multimodal e Teachable Machine.",
-    show_avatar: bool = True
+    show_avatar: bool = True,
+    badge_text: str = "Assistente Virtual & Saúde Botânica",
 ):
-    """Renderiza cabeçalho futurista estilo Nova com avatar animado e orbs."""
-    avatar_html = ""
+    """
+    Renderiza o hero futurista estilo Nova usando st.components.v1.html,
+    garantindo que todas as animações CSS/JS funcionem (orbs, anéis giratórios,
+    olhos piscando, boca animada, partículas) exatamente como no HTML original.
+    """
+    avatar_section = ""
     if show_avatar:
-        avatar_html = """
-        <div class="hero-avatar-area">
-            <div class="orb orb-1"></div>
-            <div class="orb orb-2"></div>
-            <div class="orb orb-3"></div>
-            <div class="avatar-container">
-                <div class="avatar-ring"></div>
-                <div class="avatar-ring ring-2"></div>
-                <div class="pulse-ring"></div>
-                <div class="avatar">
-                    <div class="avatar-face">
-                        <div class="eye left"></div>
-                        <div class="eye right"></div>
-                        <div class="mouth"></div>
-                    </div>
-                </div>
+        avatar_section = """
+        <div class="hero-visual">
+          <div class="orb orb-1"></div>
+          <div class="orb orb-2"></div>
+          <div class="orb orb-3"></div>
+          <div class="avatar-container">
+            <div class="avatar-ring"></div>
+            <div class="avatar-ring ring-2"></div>
+            <div class="avatar" id="heroAvatar">
+              <div class="avatar-face">
+                <div class="eye left"></div>
+                <div class="eye right"></div>
+                <div class="mouth"></div>
+              </div>
             </div>
+            <div class="pulse-ring"></div>
+          </div>
         </div>
         """
 
-    st.markdown(f"""
-    <div class="nova-hero-container">
-        <div class="nova-hero-grid">
-            <div>
-                <div class="badge">
-                    <span class="badge-dot"></span>
-                    Assistente Virtual & Saúde Botânica
-                </div>
-                <h1 class="nova-hero-title">
-                    {title}
-                </h1>
-                <p class="nova-hero-desc">
-                    {subtitle}
-                </p>
-            </div>
-            {avatar_html}
-        </div>
+    hero_html = f"""<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{{margin:0;padding:0;box-sizing:border-box}}
+:root{{
+  --bg:#0a0a0f;--bg-card:#16161f;
+  --text:#f1f5f9;--text-muted:#94a3b8;
+  --primary:#a78bfa;--primary-light:#c4b5fd;
+  --secondary:#38bdf8;--accent:#f472b6;--success:#34d399;
+  --gradient:linear-gradient(135deg,#a78bfa 0%,#38bdf8 50%,#f472b6 100%);
+  --border:rgba(255,255,255,0.08);--border-glow:rgba(167,139,250,0.3);
+}}
+html,body{{background:transparent;color:var(--text);font-family:'Inter',sans-serif;overflow:hidden}}
+.hero{{
+  display:grid;
+  grid-template-columns:1.4fr 1fr;
+  align-items:center;
+  gap:2.5rem;
+  padding:2rem 2.4rem 2rem;
+  position:relative;
+  background:linear-gradient(135deg,rgba(22,22,31,0.75) 0%,rgba(18,18,26,0.9) 100%);
+  border:1px solid var(--border);
+  border-radius:22px;
+  backdrop-filter:blur(25px);
+  box-shadow:0 25px 50px -12px rgba(0,0,0,0.5);
+  overflow:hidden;
+}}
+/* gradient text */
+.gradient-text{{
+  background:var(--gradient);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;display:inline;
+}}
+/* badge */
+.badge{{
+  display:inline-flex;align-items:center;gap:.45rem;
+  background:rgba(167,139,250,.12);border:1px solid rgba(167,139,250,.28);
+  color:var(--primary-light);padding:.35rem 1rem;border-radius:999px;
+  font-size:.83rem;font-weight:500;margin-bottom:1.1rem;
+}}
+.badge-dot{{
+  width:7px;height:7px;background:var(--success);border-radius:50%;
+  box-shadow:0 0 8px var(--success);
+  animation:pulse-dot 2s infinite;
+}}
+@keyframes pulse-dot{{0%,100%{{opacity:1;transform:scale(1)}}50%{{opacity:.55;transform:scale(1.35)}}}}
+/* title */
+h1{{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:clamp(1.75rem,3.5vw,2.8rem);
+  font-weight:800;line-height:1.15;letter-spacing:-.03em;
+  margin-bottom:.9rem;color:var(--text);
+}}
+p.desc{{color:var(--text-muted);font-size:1rem;line-height:1.65;max-width:480px}}
+
+/* ── hero visual ── */
+.hero-visual{{
+  position:relative;display:flex;align-items:center;justify-content:center;
+  height:280px;
+}}
+/* orbs */
+.orb{{position:absolute;border-radius:50%;filter:blur(55px);opacity:.5;animation:orb-float 8s ease-in-out infinite;pointer-events:none}}
+.orb-1{{width:220px;height:220px;background:#a78bfa;top:5%;left:10%}}
+.orb-2{{width:160px;height:160px;background:#38bdf8;bottom:10%;right:8%;animation-delay:-3s}}
+.orb-3{{width:130px;height:130px;background:#f472b6;top:38%;right:25%;animation-delay:-5s}}
+@keyframes orb-float{{
+  0%,100%{{transform:translate(0,0) scale(1)}}
+  33%{{transform:translate(18px,-25px) scale(1.06)}}
+  66%{{transform:translate(-12px,18px) scale(.94)}}
+}}
+/* avatar */
+.avatar-container{{position:relative;z-index:2}}
+.avatar-ring{{
+  position:absolute;inset:-20px;
+  border:2px solid rgba(167,139,250,.3);border-radius:50%;
+  animation:spin-slow 20s linear infinite;
+}}
+.avatar-ring.ring-2{{
+  inset:-40px;border-color:rgba(56,189,248,.2);
+  animation-direction:reverse;animation-duration:30s;
+}}
+@keyframes spin-slow{{to{{transform:rotate(360deg)}}}}
+.avatar{{
+  width:160px;height:160px;
+  background:linear-gradient(145deg,#1e1e2e,#2a2a3d);
+  border-radius:50%;display:flex;align-items:center;justify-content:center;
+  box-shadow:0 0 0 4px rgba(167,139,250,.2),0 20px 60px rgba(0,0,0,.4),inset 0 0 40px rgba(167,139,250,.12);
+  animation:avatar-float 6s ease-in-out infinite;
+}}
+@keyframes avatar-float{{0%,100%{{transform:translateY(0)}}50%{{transform:translateY(-10px)}}}}
+.avatar.speaking{{animation:speak-bounce .6s ease infinite,avatar-float 6s ease-in-out infinite}}
+@keyframes speak-bounce{{0%,100%{{transform:scale(1)}}50%{{transform:scale(1.04)}}}}
+/* face */
+.avatar-face{{position:relative;width:60%;height:50%}}
+.eye{{
+  position:absolute;width:16px;height:16px;background:#e2e8f0;
+  border-radius:50%;top:20%;box-shadow:inset 0 -2px 0 rgba(0,0,0,.15);transition:transform .15s ease;
+}}
+.eye.left{{left:12%}}.eye.right{{right:12%}}
+.eye::after{{
+  content:'';position:absolute;width:7px;height:7px;background:#1e1e2e;
+  border-radius:50%;top:50%;left:50%;transform:translate(-50%,-50%);
+}}
+.mouth{{
+  position:absolute;bottom:8%;left:50%;transform:translateX(-50%);
+  width:26px;height:11px;border:2.5px solid #e2e8f0;border-top:none;
+  border-radius:0 0 18px 18px;transition:all .3s ease;
+}}
+.avatar.happy .mouth{{width:30px;height:14px;border-radius:0 0 28px 28px}}
+.avatar.speaking .mouth{{animation:mouth-talk .35s ease infinite alternate}}
+@keyframes mouth-talk{{from{{height:7px;width:22px}}to{{height:15px;width:28px;border-radius:0 0 36px 36px}}}}
+/* pulse ring */
+.pulse-ring{{
+  position:absolute;inset:-10px;
+  border:2px solid rgba(167,139,250,.4);border-radius:50%;
+  animation:pulse-expand 2.5s ease-out infinite;
+}}
+@keyframes pulse-expand{{0%{{transform:scale(1);opacity:.6}}100%{{transform:scale(1.45);opacity:0}}}}
+/* particles */
+.particles{{position:absolute;inset:0;pointer-events:none;overflow:hidden;border-radius:22px}}
+.particle{{
+  position:absolute;border-radius:50%;opacity:.35;
+  animation:float-particle 14s infinite linear;
+}}
+@keyframes float-particle{{
+  0%{{transform:translateY(100%) scale(0);opacity:0}}
+  10%{{opacity:.4}}90%{{opacity:.15}}
+  100%{{transform:translateY(-80px) scale(1);opacity:0}}
+}}
+@keyframes fadeUp{{from{{opacity:0;transform:translateY(24px)}}to{{opacity:1;transform:translateY(0)}}}}
+.hero-content{{animation:fadeUp .7s ease both}}
+</style>
+</head>
+<body>
+<div class="hero">
+  <div class="particles" id="particles"></div>
+  <div class="hero-content">
+    <div class="badge">
+      <span class="badge-dot"></span>
+      {badge_text}
     </div>
-    """, unsafe_allow_html=True)
+    <h1>{title}</h1>
+    <p class="desc">{subtitle}</p>
+  </div>
+  {avatar_section}
+</div>
+<script>
+// Particles
+(function(){{
+  const c=document.getElementById('particles');
+  if(!c)return;
+  const colors=['#a78bfa','#38bdf8','#f472b6','#c4b5fd'];
+  for(let i=0;i<28;i++){{
+    const p=document.createElement('div');
+    p.className='particle';
+    p.style.left=Math.random()*100+'%';
+    p.style.animationDelay=Math.random()*14+'s';
+    p.style.animationDuration=(10+Math.random()*10)+'s';
+    const sz=1.5+Math.random()*3+'px';
+    p.style.width=sz;p.style.height=sz;
+    p.style.background=colors[Math.floor(Math.random()*4)];
+    c.appendChild(p);
+  }}
+}})();
+
+// Blink eyes
+function blinkEyes(){{
+  document.querySelectorAll('.eye').forEach(e=>e.style.transform='scaleY(0.08)');
+  setTimeout(()=>document.querySelectorAll('.eye').forEach(e=>e.style.transform=''),140);
+}}
+setInterval(blinkEyes, 3200+Math.random()*1800);
+
+// Idle avatar expression cycle
+const av=document.getElementById('heroAvatar');
+if(av){{
+  setInterval(()=>{{
+    av.classList.add('happy');
+    setTimeout(()=>av.classList.remove('happy'),1200);
+  }}, 7000);
+}}
+</script>
+</body>
+</html>"""
+
+    height = 240 if show_avatar else 160
+    components.html(hero_html, height=height, scrolling=False)
 
 def render_quality_audit(audit: Dict[str, Any]):
     """Renderiza a avaliação de qualidade fotográfica antes da inferência."""
