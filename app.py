@@ -49,8 +49,18 @@ tm_service = get_tm_service()
 gemini_service = get_gemini_service()
 
 # ==========================================
-# Estado da Sessão (Session State)
+# Estado da Sessão (Session State) e Navegação
 # ==========================================
+PAGES = [
+    "🏠 Início",
+    "🔍 Nova Análise",
+    "🌿 Meu Jardim & Acompanhamento",
+    "🧪 Validação & Testes de IA",
+    "⚙️ Configurações & API"
+]
+
+if "current_page" not in st.session_state:
+    st.session_state.current_page = "🏠 Início"
 if "current_analysis" not in st.session_state:
     st.session_state.current_analysis = None
 if "current_image" not in st.session_state:
@@ -60,29 +70,44 @@ if "current_audit" not in st.session_state:
 if "selected_plant_id" not in st.session_state:
     st.session_state.selected_plant_id = None
 
+def switch_page(new_page: str, reset_analysis: bool = False):
+    """Muda a página ativa e opcionalmente reseta a análise em andamento."""
+    st.session_state.current_page = new_page
+    if reset_analysis:
+        st.session_state.current_analysis = None
+        st.session_state.current_image = None
+        st.session_state.current_audit = None
+    st.rerun()
+
 # ==========================================
 # Barra Lateral de Navegação
 # ==========================================
 with st.sidebar:
     st.markdown("""
-    <div style="text-align: center; padding: 1.5rem 0 1rem 0;">
-        <span style="font-size: 3rem;">🌿</span>
-        <h2 style="margin: 0; color: #ffffff; font-weight: 800; font-size: 1.5rem;">PlantCare AI</h2>
-        <p style="color: #a7f3d0; font-size: 0.85rem; margin: 4px 0 0 0;">Saúde Vegetal & Inteligência Artificial</p>
+    <div style="text-align: center; padding: 1.2rem 0 0.8rem 0;">
+        <span style="font-size: 2.8rem;">🌿</span>
+        <h2 style="margin: 0; color: #ffffff; font-weight: 800; font-size: 1.4rem;">PlantCare AI</h2>
+        <p style="color: #a7f3d0; font-size: 0.82rem; margin: 2px 0 0 0;">Saúde Vegetal & Inteligência Artificial</p>
     </div>
     """, unsafe_allow_html=True)
 
-    page = st.radio(
+    # Botão de Ação Rápida Sempre Visível na Barra Lateral
+    if st.button("➕ Fazer Novo Teste", type="primary", use_container_width=True, help="Iniciar uma nova análise de planta"):
+        switch_page("🔍 Nova Análise", reset_analysis=True)
+
+    st.write("")
+
+    current_idx = PAGES.index(st.session_state.current_page) if st.session_state.current_page in PAGES else 0
+    selected_page = st.radio(
         "Navegação",
-        [
-            "🏠 Início",
-            "🔍 Nova Análise",
-            "🌿 Meu Jardim & Acompanhamento",
-            "🧪 Validação & Testes de IA",
-            "⚙️ Configurações & API"
-        ],
+        PAGES,
+        index=current_idx,
+        key="main_navigation_radio",
         label_visibility="collapsed"
     )
+    if selected_page != st.session_state.current_page:
+        st.session_state.current_page = selected_page
+        st.rerun()
 
     st.markdown("---")
     
@@ -100,6 +125,8 @@ with st.sidebar:
 
     st.markdown("---")
     st.caption("🌱 Desenvolvido com Google Gemini & Google Teachable Machine.")
+
+page = st.session_state.current_page
 
 # ==========================================
 # PÁGINA 1: INÍCIO
@@ -148,6 +175,14 @@ if page == "🏠 Início":
         </div>
         """, unsafe_allow_html=True)
 
+    st.write("")
+    col_hero_cta1, col_hero_cta2 = st.columns([1.5, 1])
+    with col_hero_cta1:
+        if st.button("🔬 Analisar Minha Planta Agora (Fazer Novo Teste)", type="primary", use_container_width=True, key="btn_hero_novo_teste"):
+            switch_page("🔍 Nova Análise", reset_analysis=True)
+    with col_hero_cta2:
+        if st.button("🌿 Ver Meu Jardim & Acompanhamento", use_container_width=True, key="btn_hero_ver_jardim"):
+            switch_page("🌿 Meu Jardim & Acompanhamento")
     st.write("")
     
     col_cta1, col_cta2 = st.columns([1.8, 1.2])
@@ -202,126 +237,41 @@ elif page == "🔍 Nova Análise":
         subtitle="Fotografe a folha ou planta para análise integrada entre Teachable Machine e Google Gemini."
     )
 
-    col_up1, col_up2 = st.columns([1.1, 0.9])
-    
-    with col_up1:
-        st.markdown("##### 1. Capturar ou Enviar Imagem")
-        input_method = st.radio(
-            "Método de entrada",
-            ["📤 Upload de Arquivo (JPG/PNG)", "📷 Usar Câmera", "🌱 Usar Imagem de Exemplo (plantas_1.jpg)"],
-            horizontal=True
-        )
-
-        image_to_process = None
-
-        if input_method == "📤 Upload de Arquivo (JPG/PNG)":
-            uploaded_file = st.file_uploader("Selecione uma imagem de folha ou planta:", type=["jpg", "jpeg", "png"])
-            if uploaded_file:
-                image_to_process = Image.open(uploaded_file).convert("RGB")
-
-        elif input_method == "📷 Usar Câmera":
-            camera_file = st.camera_input("Tire uma foto nítida da planta ou do sintoma:")
-            if camera_file:
-                image_to_process = Image.open(camera_file).convert("RGB")
-
-        elif input_method == "🌱 Usar Imagem de Exemplo (plantas_1.jpg)":
-            sample_path = Path("plantas_1.jpg")
-            if sample_path.exists():
-                image_to_process = Image.open(sample_path).convert("RGB")
-                st.caption("Imagem de exemplo carregada da pasta do projeto.")
-            else:
-                st.warning("Arquivo 'plantas_1.jpg' não encontrado.")
-
-        # Auditoria da Qualidade se imagem estiver disponível
-        if image_to_process:
-            st.session_state.current_image = image_to_process
-            audit = ImageQualityService.inspect_and_validate(image_to_process)
-            st.session_state.current_audit = audit
-            render_quality_audit(audit)
-            st.image(image_to_process, caption="Fotografia selecionada para análise", use_container_width=True)
-
-    with col_up2:
-        st.markdown("##### 2. Informações de Contexto (Opcional, melhora o diagnóstico)")
-        with st.expander("📝 Responder perguntas para refinar o diagnóstico", expanded=True):
-            st.caption("Estas respostas ajudam a IA a diferenciar carências nutricionais de problemas de rega ou pragas.")
-            
-            c_loc = st.selectbox("Onde a planta fica?", ["Não informado", "Interior (dentro de casa / apartamento)", "Exterior (varanda / quintal aberto)"])
-            c_luz = st.selectbox("Qual é a iluminação diária?", ["Não informado", "Luz solar direta constante", "Luz solar indireta brilhante", "Meia-sombra / luz fraca", "Ambiente escuro"])
-            c_rega = st.selectbox("Com que frequência costuma regar?", ["Não informado", "Diariamente", "2 a 3 vezes por semana", "1 vez por semana", "Apenas quando o solo seca completamente", "Raras vezes"])
-            c_tempo = st.selectbox("Quando os sintomas começaram?", ["Não informado", "Há poucos dias (recente)", "Há 1 a 2 semanas", "Há mais de um mês"])
-            c_distrib = st.selectbox("Onde os sintomas aparecem?", ["Não informado", "Apenas em uma folha isolada", "Nas folhas mais velhas da base", "Nas folhas novas brotando no topo", "Na planta inteira"])
-            c_vaso = st.checkbox("Houve transplante, troca de vaso ou solo recentemente?")
-
-            user_context = {
-                "Localização": c_loc if c_loc != "Não informado" else None,
-                "Iluminação": c_luz if c_luz != "Não informado" else None,
-                "Frequência de Rega": c_rega if c_rega != "Não informado" else None,
-                "Início dos Sintomas": c_tempo if c_tempo != "Não informado" else None,
-                "Distribuição dos Sintomas": c_distrib if c_distrib != "Não informado" else None,
-                "Transplante recente": "Sim" if c_vaso else "Não"
-            }
-
-        # Botão de Ação
-        st.write("")
-        start_btn = st.button("🔬 Iniciar Diagnóstico Completo com IA", type="primary", use_container_width=True)
-
-    # Execução do Processamento
-    if start_btn:
-        if not st.session_state.current_image:
-            st.error("Por favor, selecione ou envie uma imagem antes de iniciar o diagnóstico.")
-        elif not gemini_service.is_configured():
-            st.error("A chave da API do Google Gemini não está configurada! Vá na aba '⚙️ Configurações & API' para configurar.")
-        else:
-            img = st.session_state.current_image
-            
-            # Stepper Visual com Feedback Real
-            progress_bar = st.progress(0)
-            status_text = st.empty()
-
-            # Etapa 1: Otimização da Imagem
-            status_text.info("📸 Etapa 1/4: Preparando e otimizando a fotografia...")
-            progress_bar.progress(25)
-            optimized_img = ImageQualityService.prepare_for_ai(img)
-
-            # Etapa 2: Classificação Local Teachable Machine
-            status_text.info("🔬 Etapa 2/4: Classificando padrões visuais no Google Teachable Machine local...")
-            progress_bar.progress(50)
-            tm_result = tm_service.predict(img)
-
-            # Etapa 3: Consulta ao Agrônomo Virtual Gemini
-            status_text.info("🌿 Etapa 3/4: Raciocínio botânico aprofundado com Google Gemini...")
-            progress_bar.progress(75)
-            gemini_res = gemini_service.analyze_plant(
-                image=optimized_img,
-                tm_result=tm_result,
-                user_context=user_context
-            )
-
-            # Etapa 4: Consolidação dos Resultados
-            status_text.info("📋 Etapa 4/4: Consolidando relatório fitossanitário...")
-            progress_bar.progress(100)
-            status_text.empty()
-            progress_bar.empty()
-
-            if gemini_res.get("success"):
-                st.session_state.current_analysis = {
-                    "tm_result": tm_result,
-                    "gemini_data": gemini_res.get("data"),
-                    "model_used": gemini_res.get("model_used"),
-                    "timestamp": datetime.now().isoformat()
-                }
-                st.success(f"Diagnóstico concluído com sucesso via {gemini_res.get('model_used')}!")
-            else:
-                st.error(f"Erro no diagnóstico: {gemini_res.get('error_message')}")
-
-    # Exibição dos Resultados Existentes na Sessão
+    # SE JÁ EXISTIR UM DIAGNÓSTICO ATIVO NA SESSÃO:
     if st.session_state.current_analysis:
         analysis = st.session_state.current_analysis
-        tm_res = analysis.get("tm_result")
-        gem_data = analysis.get("gemini_data")
+        tm_res = analysis.get("tm_result", {})
+        gem_data = analysis.get("gemini_data", {})
 
-        st.markdown("---")
-        st.subheader("📋 Relatório Fitossanitário Inteligente")
+        # Barra de Ações Superiores Destacadas
+        st.markdown("""
+        <div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border: 1px solid #86efac; border-radius: 16px; padding: 1.2rem 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 4px 14px rgba(27,67,50,0.08);">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+                <div>
+                    <h3 style="margin: 0; color: #166534; font-size: 1.35rem; font-weight: 800;">📋 Relatório Fitossanitário Concluído</h3>
+                    <p style="margin: 4px 0 0 0; color: #374151; font-size: 0.92rem;">
+                        Resultado gerado com sucesso. Você pode salvar no seu jardim, baixar o laudo ou realizar um novo teste quando quiser.
+                    </p>
+                </div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+
+        col_top_act1, col_top_act2, col_top_act3 = st.columns([1.3, 1, 1])
+        with col_top_act1:
+            if st.button("🔄 Fazer Outro Teste / Nova Imagem", type="primary", use_container_width=True, key="top_novo_teste"):
+                st.session_state.current_analysis = None
+                st.session_state.current_image = None
+                st.session_state.current_audit = None
+                st.rerun()
+        with col_top_act2:
+            with st.expander("📸 Ver Fotografia Analisada", expanded=False):
+                if st.session_state.current_image:
+                    st.image(st.session_state.current_image, caption="Foto enviada", use_container_width=True)
+        with col_top_act3:
+            st.markdown(f"<div style='text-align: right; padding-top: 10px; font-size: 0.85rem; color: #64748b;'>Motor IA: <b>{analysis.get('model_used')}</b></div>", unsafe_allow_html=True)
+
+        st.write("")
 
         # Exibir painel do Teachable Machine
         render_teachable_machine_panel(tm_res)
@@ -350,7 +300,7 @@ elif page == "🔍 Nova Análise":
 
                 save_notes = st.text_area("Observações pessoais (opcional):", placeholder="Ex: Manchas surgiram após a chuva...")
 
-                if st.button("Confirmar e Salvar", type="primary"):
+                if st.button("Confirmar e Salvar", type="primary", key="btn_confirmar_salvar"):
                     # Salvar imagem no disco
                     saved_img_path = db.save_image_to_disk(st.session_state.current_image, prefix="diag")
                     
@@ -406,11 +356,129 @@ Gravidade: {gem_data.get('estado_saude', {}).get('gravidade_estimada')}
 
         with col_act3:
             st.markdown("##### 🔄 Nova Consulta")
-            if st.button("Limpar e Analisar Outra Imagem", use_container_width=True):
+            if st.button("Limpar e Fazer Outro Teste", type="primary", use_container_width=True, key="bottom_novo_teste"):
                 st.session_state.current_analysis = None
                 st.session_state.current_image = None
                 st.session_state.current_audit = None
                 st.rerun()
+
+    # SE NÃO HOUVER ANÁLISE (MODO DE CAPTURA):
+    else:
+        col_up1, col_up2 = st.columns([1.1, 0.9])
+        
+        with col_up1:
+            st.markdown("##### 1. Capturar ou Enviar Imagem")
+            input_method = st.radio(
+                "Método de entrada",
+                ["📤 Upload de Arquivo (JPG/PNG)", "📷 Usar Câmera", "🌱 Usar Imagem de Exemplo (plantas_1.jpg)"],
+                horizontal=True
+            )
+
+            image_to_process = None
+
+            if input_method == "📤 Upload de Arquivo (JPG/PNG)":
+                uploaded_file = st.file_uploader("Selecione uma imagem de folha ou planta:", type=["jpg", "jpeg", "png"])
+                if uploaded_file:
+                    image_to_process = Image.open(uploaded_file).convert("RGB")
+
+            elif input_method == "📷 Usar Câmera":
+                camera_file = st.camera_input("Tire uma foto nítida da planta ou do sintoma:")
+                if camera_file:
+                    image_to_process = Image.open(camera_file).convert("RGB")
+
+            elif input_method == "🌱 Usar Imagem de Exemplo (plantas_1.jpg)":
+                sample_path = Path("plantas_1.jpg")
+                if sample_path.exists():
+                    image_to_process = Image.open(sample_path).convert("RGB")
+                    st.caption("Imagem de exemplo carregada da pasta do projeto.")
+                else:
+                    st.warning("Arquivo 'plantas_1.jpg' não encontrado.")
+
+            # Auditoria da Qualidade se imagem estiver disponível
+            if image_to_process:
+                st.session_state.current_image = image_to_process
+                audit = ImageQualityService.inspect_and_validate(image_to_process)
+                st.session_state.current_audit = audit
+                render_quality_audit(audit)
+                st.image(image_to_process, caption="Fotografia selecionada para análise", use_container_width=True)
+                if st.button("🗑️ Trocar / Remover Foto"):
+                    st.session_state.current_image = None
+                    st.session_state.current_audit = None
+                    st.rerun()
+
+        with col_up2:
+            st.markdown("##### 2. Informações de Contexto (Opcional, melhora o diagnóstico)")
+            with st.expander("📝 Responder perguntas para refinar o diagnóstico", expanded=True):
+                st.caption("Estas respostas ajudam a IA a diferenciar carências nutricionais de problemas de rega ou pragas.")
+                
+                c_loc = st.selectbox("Onde a planta fica?", ["Não informado", "Interior (dentro de casa / apartamento)", "Exterior (varanda / quintal aberto)"])
+                c_luz = st.selectbox("Qual é a iluminação diária?", ["Não informado", "Luz solar direta constante", "Luz solar indireta brilhante", "Meia-sombra / luz fraca", "Ambiente escuro"])
+                c_rega = st.selectbox("Com que frequência costuma regar?", ["Não informado", "Diariamente", "2 a 3 vezes por semana", "1 vez por semana", "Apenas quando o solo seca completamente", "Raras vezes"])
+                c_tempo = st.selectbox("Quando os sintomas começaram?", ["Não informado", "Há poucos dias (recente)", "Há 1 a 2 semanas", "Há mais de um mês"])
+                c_distrib = st.selectbox("Onde os sintomas aparecem?", ["Não informado", "Apenas em uma folha isolada", "Nas folhas mais velhas da base", "Nas folhas novas brotando no topo", "Na planta inteira"])
+                c_vaso = st.checkbox("Houve transplante, troca de vaso ou solo recentemente?")
+
+                user_context = {
+                    "Localização": c_loc if c_loc != "Não informado" else None,
+                    "Iluminação": c_luz if c_luz != "Não informado" else None,
+                    "Frequência de Rega": c_rega if c_rega != "Não informado" else None,
+                    "Início dos Sintomas": c_tempo if c_tempo != "Não informado" else None,
+                    "Distribuição dos Sintomas": c_distrib if c_distrib != "Não informado" else None,
+                    "Transplante recente": "Sim" if c_vaso else "Não"
+                }
+
+            # Botão de Ação
+            st.write("")
+            start_btn = st.button("🔬 Iniciar Diagnóstico Completo com IA", type="primary", use_container_width=True)
+
+            if start_btn:
+                if not st.session_state.current_image:
+                    st.error("Por favor, selecione ou envie uma imagem antes de iniciar o diagnóstico.")
+                elif not gemini_service.is_configured():
+                    st.error("A chave da API do Google Gemini não está configurada! Vá na aba '⚙️ Configurações & API' para configurar.")
+                else:
+                    img = st.session_state.current_image
+                    
+                    # Stepper Visual com Feedback Real
+                    progress_bar = st.progress(0)
+                    status_text = st.empty()
+
+                    # Etapa 1: Otimização da Imagem
+                    status_text.info("📸 Etapa 1/4: Preparando e otimizando a fotografia...")
+                    progress_bar.progress(25)
+                    optimized_img = ImageQualityService.prepare_for_ai(img)
+
+                    # Etapa 2: Classificação Local Teachable Machine
+                    status_text.info("🔬 Etapa 2/4: Classificando padrões visuais no Google Teachable Machine local...")
+                    progress_bar.progress(50)
+                    tm_result = tm_service.predict(img)
+
+                    # Etapa 3: Consulta ao Agrônomo Virtual Gemini
+                    status_text.info("🌿 Etapa 3/4: Raciocínio botânico aprofundado com Google Gemini...")
+                    progress_bar.progress(75)
+                    gemini_res = gemini_service.analyze_plant(
+                        image=optimized_img,
+                        tm_result=tm_result,
+                        user_context=user_context
+                    )
+
+                    # Etapa 4: Consolidação dos Resultados
+                    status_text.info("📋 Etapa 4/4: Consolidando relatório fitossanitário...")
+                    progress_bar.progress(100)
+                    status_text.empty()
+                    progress_bar.empty()
+
+                    if gemini_res.get("success"):
+                        st.session_state.current_analysis = {
+                            "tm_result": tm_result,
+                            "gemini_data": gemini_res.get("data"),
+                            "model_used": gemini_res.get("model_used"),
+                            "timestamp": datetime.now().isoformat()
+                        }
+                        st.success(f"Diagnóstico concluído com sucesso via {gemini_res.get('model_used')}!")
+                        st.rerun()
+                    else:
+                        st.error(f"Erro no diagnóstico: {gemini_res.get('error_message')}")
 
 # ==========================================
 # PÁGINA 3: MEU JARDIM & ACOMPANHAMENTO
@@ -481,7 +549,7 @@ elif page == "🌿 Meu Jardim & Acompanhamento":
                 """, unsafe_allow_html=True)
 
                 # Ações Rápidas de Cuidados (1 clique)
-                col_care1, col_care2, col_care3 = st.columns(3)
+                col_care1, col_care2, col_care3, col_care4 = st.columns(4)
                 with col_care1:
                     if st.button("💧 Reguei Hoje", key=f"care_water_{p_id}", use_container_width=True):
                         db.log_care(p_id, "Rega", "Rega rotineira realizada")
@@ -493,10 +561,13 @@ elif page == "🌿 Meu Jardim & Acompanhamento":
                         st.toast("Adubação registrada!")
                         st.rerun()
                 with col_care3:
-                    if st.button("✂️ Fiz Poda Sanitária", key=f"care_prune_{p_id}", use_container_width=True):
+                    if st.button("✂️ Fiz Poda", key=f"care_prune_{p_id}", use_container_width=True):
                         db.log_care(p_id, "Poda", "Folhas secas ou lesadas removidas")
                         st.toast("Poda registrada!")
                         st.rerun()
+                with col_care4:
+                    if st.button("🔬 Fazer Novo Teste", key=f"care_new_diag_{p_id}", type="primary", use_container_width=True):
+                        switch_page("🔍 Nova Análise", reset_analysis=True)
 
                 # Abas: Histórico de Diagnósticos, Comparador Antes x Depois, Diário de Cuidados
                 tab_hist, tab_comp, tab_diary = st.tabs(["📋 Histórico de Diagnósticos", "🔄 Comparador Antes x Depois", "📖 Diário de Cuidados"])

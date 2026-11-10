@@ -25,6 +25,6 @@ data/*.sqlite3
 *.swp
 *.swo
 
-# Sistema operacional
-.DS_Store
-Thumbs.db
+# Scripts locais
+*.bat
+subir_github.bat

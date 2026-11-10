@@ -13,10 +13,88 @@ html, body, [class*="css"] {
     color: #1f2937;
 }
 
-/* Esconder cabeçalho padrão Streamlit */
-#MainMenu {visibility: hidden;}
-footer {visibility: hidden;}
-header {visibility: hidden;}
+/* Esconder menu de opções padrão e rodapé sem esconder o botão lateral */
+#MainMenu {
+    visibility: hidden;
+}
+
+footer {
+    visibility: hidden;
+}
+
+/* O header não deve ser ocultado totalmente para manter o botão de reabrir a barra lateral acessível */
+header[data-testid="stHeader"] {
+    background: transparent !important;
+    pointer-events: none !important;
+}
+
+header[data-testid="stHeader"] [data-testid="stToolbar"],
+header[data-testid="stHeader"] [data-testid="stDecoration"],
+header[data-testid="stHeader"] [data-testid="stStatusWidget"] {
+    display: none !important;
+    visibility: hidden !important;
+}
+
+/* Reativar cliques e estilizar o botão lateral que expande/recolhe a barra lateral */
+[data-testid="stSidebarCollapsedControl"],
+[data-testid="collapsedControl"],
+header button {
+    pointer-events: auto !important;
+}
+
+[data-testid="stSidebarCollapsedControl"],
+[data-testid="collapsedControl"] {
+    visibility: visible !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    position: fixed !important;
+    top: 14px !important;
+    left: 14px !important;
+    z-index: 999999 !important;
+    width: 44px !important;
+    height: 44px !important;
+    background: #ffffff !important;
+    color: #1b4332 !important;
+    border: 2px solid #52b788 !important;
+    border-radius: 12px !important;
+    box-shadow: 0 4px 14px rgba(27, 67, 50, 0.25) !important;
+    cursor: pointer !important;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+[data-testid="stSidebarCollapsedControl"]:hover,
+[data-testid="collapsedControl"]:hover {
+    background: #d8f3dc !important;
+    border-color: #1b4332 !important;
+    color: #1b4332 !important;
+    transform: scale(1.08) !important;
+    box-shadow: 0 6px 18px rgba(27, 67, 50, 0.35) !important;
+}
+
+[data-testid="stSidebarCollapsedControl"] svg,
+[data-testid="collapsedControl"] svg {
+    fill: #1b4332 !important;
+    stroke: #1b4332 !important;
+    width: 22px !important;
+    height: 22px !important;
+}
+
+/* Botão de fechar dentro da própria sidebar */
+[data-testid="stSidebarCollapseButton"] {
+    color: #ffffff !important;
+    background: rgba(255, 255, 255, 0.12) !important;
+    border-radius: 8px !important;
+    transition: background 0.2s ease !important;
+}
+
+[data-testid="stSidebarCollapseButton"]:hover {
+    background: rgba(255, 255, 255, 0.25) !important;
+}
+
+[data-testid="stSidebarCollapseButton"] svg {
+    fill: #ffffff !important;
+}
 
 /* Variáveis de Cores */
 :root {
