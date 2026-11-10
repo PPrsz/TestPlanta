@@ -257,3 +257,113 @@ def render_diagnosis_view(gemini_data: Dict[str, Any], tm_result: Optional[Dict[
             {transparencia}
         </div>
         """, unsafe_allow_html=True)
+
+def render_floating_chat(gemini_service, current_analysis: Optional[Dict[str, Any]] = None):
+    """
+    Renderiza um widget de chat flutuante no canto inferior direito,
+    atuando como assistente virtual botânico com Google Gemini.
+    """
+    if "chat_messages" not in st.session_state:
+        st.session_state.chat_messages = [
+            {
+                "role": "assistant",
+                "content": "Olá! Sou seu **Agrônomo Virtual**. 🌿\n\nComo posso ajudar suas plantas hoje? Pode me perguntar sobre frequência de rega, adubos, podas, sol ou dúvidas sobre o diagnóstico!"
+            }
+        ]
+
+    # Popover flutuante posicionado no canto inferior direito
+    with st.popover("💬 Assistente Virtual", help="Abra o chat para tirar dúvidas com a IA botânica"):
+        # Cabeçalho do Chat
+        st.markdown("""
+        <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid #f0fdf4; padding-bottom: 10px; margin-bottom: 12px;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <span style="font-size: 1.6rem;">🌱</span>
+                <div>
+                    <strong style="color: #1b4332; font-size: 1.05rem; display: block; line-height: 1.2;">Agrônomo Virtual</strong>
+                    <span style="font-size: 0.76rem; color: #15803d; font-weight: 600; display: inline-flex; align-items: center; gap: 4px;">
+                        <span style="display: inline-block; width: 7px; height: 7px; background: #22c55e; border-radius: 50%;"></span>
+                        Online via Google Gemini
+                    </span>
+                </div>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+
+        # Contexto ativo se houver diagnóstico em tela
+        context_desc = None
+        if current_analysis:
+            g_data = current_analysis.get("gemini_data", {})
+            p_name = g_data.get("identificacao", {}).get("nome_popular", "Planta")
+            p_health = g_data.get("estado_saude", {}).get("status", "Em avaliação")
+            context_desc = f"Planta: {p_name} | Diagnóstico: {p_health}"
+            st.markdown(f"""
+            <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 6px 10px; font-size: 0.8rem; color: #166534; margin-bottom: 10px;">
+                🌿 <b>Contexto ativo:</b> {p_name} ({p_health})
+            </div>
+            """, unsafe_allow_html=True)
+
+        # Sugestões rápidas de perguntas quando o chat tem poucas mensagens
+        if len(st.session_state.chat_messages) <= 2:
+            st.markdown("<p style='font-size: 0.78rem; font-weight: 600; color: #64748b; margin-bottom: 6px;'>Perguntas frequentes:</p>", unsafe_allow_html=True)
+            col_chip1, col_chip2 = st.columns(2)
+            with col_chip1:
+                if st.button("💧 Como regar certo?", key="btn_chip_rega", use_container_width=True):
+                    _send_chat_message(
+                        "Como saber se estou regando minha planta na quantidade certa ou em excesso?",
+                        gemini_service,
+                        context_desc
+                    )
+                    st.rerun()
+            with col_chip2:
+                if st.button("🍂 Folhas amarelas?", key="btn_chip_amarela", use_container_width=True):
+                    _send_chat_message(
+                        "O que geralmente faz as folhas de uma planta ficarem amarelas?",
+                        gemini_service,
+                        context_desc
+                    )
+                    st.rerun()
+
+        # Janela de histórico de mensagens com rolagem interna
+        chat_box = st.container(height=290)
+        with chat_box:
+            for m in st.session_state.chat_messages:
+                avatar = "🌿" if m["role"] == "assistant" else "👤"
+                with st.chat_message(m["role"], avatar=avatar):
+                    st.markdown(m["content"])
+
+        # Formulário de Envio
+        with st.form("chat_floating_input_form", clear_on_submit=True):
+            col_in, col_btn = st.columns([4.2, 1])
+            with col_in:
+                user_query = st.text_input(
+                    "Mensagem",
+                    placeholder="Pergunte sobre regas, folhas, pragas...",
+                    label_visibility="collapsed"
+                )
+            with col_btn:
+                sent = st.form_submit_button("➤", type="primary", use_container_width=True)
+
+            if sent and user_query.strip():
+                _send_chat_message(user_query.strip(), gemini_service, context_desc)
+                st.rerun()
+
+        # Botão para reiniciar o chat
+        if len(st.session_state.chat_messages) > 1:
+            if st.button("🧹 Limpar conversa", key="btn_limpar_historico_chat", use_container_width=True):
+                st.session_state.chat_messages = [
+                    {
+                        "role": "assistant",
+                        "content": "Conversa reiniciada! No que posso ajudar com suas plantas agora? 🌿"
+                    }
+                ]
+                st.rerun()
+
+def _send_chat_message(text: str, gemini_service, context: Optional[str] = None):
+    """Envia a mensagem ao Gemini e anexa a resposta no histórico."""
+    st.session_state.chat_messages.append({"role": "user", "content": text})
+    answer = gemini_service.chat(
+        user_message=text,
+        chat_history=st.session_state.chat_messages,
+        context=context
+    )
+    st.session_state.chat_messages.append({"role": "assistant", "content": answer})

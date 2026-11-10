@@ -202,6 +202,71 @@ Responda OBRIGATORIAMENTE em formato JSON com EXATAMENTE a seguinte estrutura:
             "error_message": f"Não foi possível obter diagnóstico do Gemini. Detalhes: {last_error}"
         }
 
+    def chat(
+        self,
+        user_message: str,
+        chat_history: Optional[List[Dict[str, str]]] = None,
+        context: Optional[str] = None
+    ) -> str:
+        """
+        Responde a dúvidas do usuário sobre botânica, jardinagem, pragas e cuidados,
+        atuando como um agrônomo especialista e botânico experiente em linguagem natural.
+        """
+        if not self.is_configured():
+            return (
+                "⚠️ A chave da API do Google Gemini não está configurada no momento. "
+                "Por favor, configure sua chave na aba **Configurações & API** para conversar com o Agrônomo Virtual."
+            )
+
+        system_instruction = (
+            "Você é o Agrônomo Virtual e Especialista Botânico do PlantCare AI. "
+            "Seu objetivo é ajudar os usuários a cuidar bem de suas plantas, diagnosticar problemas, "
+            "dar dicas práticas de rega, substrato, iluminação, podas e controle natural de pragas. "
+            "Responda sempre em português brasileiro de forma acolhedora, clara, didática e segura. "
+            "Use emojis relacionados à botânica (🌿, 💧, ☀️, ✂️, 🐛) para organizar as dicas quando apropriado. "
+            "Destaque pontos importantes em negrito e use tópicos curtos para facilitar a leitura. "
+            "Nunca recomende pesticidas agrícolas altamente tóxicos ou receitas caseiras perigosas para humanos ou animais."
+        )
+
+        context_str = ""
+        if context:
+            context_str = f"\n[Contexto da planta atualmente em foco no app: {context}]\n"
+
+        history_str = ""
+        if chat_history:
+            # Pegar até as últimas 8 mensagens para manter o contexto sem estourar tokens
+            for msg in chat_history[-8:]:
+                role = "Usuário" if msg.get("role") == "user" else "Agrônomo Virtual"
+                history_str += f"{role}: {msg.get('content')}\n"
+
+        full_prompt = f"""{system_instruction}
+{context_str}
+Histórico recente da conversa:
+{history_str}
+Usuário: {user_message}
+Agrônomo Virtual:"""
+
+        candidates = [Config.PRIMARY_GEMINI_MODEL] + Config.FALLBACK_MODELS
+
+        for model_name in candidates:
+            try:
+                response = self.client.models.generate_content(
+                    model=model_name,
+                    contents=full_prompt,
+                    config=types.GenerateContentConfig(
+                        temperature=0.4,
+                    )
+                )
+                if response and response.text:
+                    return response.text.strip()
+            except Exception:
+                continue
+
+        return (
+            "Desculpe, ocorreu uma instabilidade temporária na conexão com a IA. "
+            "Por favor, tente enviar sua pergunta novamente em instantes."
+        )
+
     def _extract_json(self, raw_text: str) -> Optional[Dict[str, Any]]:
         """Extrai e decodifica o JSON retornado pelo modelo de forma resiliente."""
         text = raw_text.strip()

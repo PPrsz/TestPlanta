@@ -356,5 +356,69 @@ header button {
     transform: translateY(-1px);
     box-shadow: 0 6px 16px rgba(27, 67, 50, 0.35) !important;
 }
+
+/* ==========================================
+   Widget Flutuante de Chat no Canto Inferior Direito
+   ========================================== */
+div[data-testid="stPopover"] {
+    position: fixed !important;
+    bottom: 24px !important;
+    right: 24px !important;
+    z-index: 999990 !important;
+}
+
+div[data-testid="stPopover"] > button {
+    background: linear-gradient(135deg, #1b4332 0%, #2d6a4f 100%) !important;
+    color: #ffffff !important;
+    border: 2px solid #52b788 !important;
+    border-radius: 9999px !important;
+    padding: 10px 22px !important;
+    font-weight: 700 !important;
+    font-size: 0.95rem !important;
+    letter-spacing: 0.01em !important;
+    box-shadow: 0 6px 20px rgba(27, 67, 50, 0.4) !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    cursor: pointer !important;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+div[data-testid="stPopover"] > button:hover {
+    background: linear-gradient(135deg, #2d6a4f 0%, #40916c 100%) !important;
+    border-color: #a7f3d0 !important;
+    transform: translateY(-3px) scale(1.04) !important;
+    box-shadow: 0 10px 28px rgba(27, 67, 50, 0.5) !important;
+}
+
+/* Janela do Popover (Corpo do Chat) */
+div[data-testid="stPopoverBody"] {
+    width: 400px !important;
+    max-width: calc(100vw - 36px) !important;
+    max-height: 600px !important;
+    border-radius: 20px !important;
+    border: 1.5px solid #86efac !important;
+    box-shadow: 0 16px 45px rgba(0, 0, 0, 0.22) !important;
+    padding: 16px !important;
+    background: #ffffff !important;
+    overflow-y: auto !important;
+}
+
+/* Responsividade móvel para o chat */
+@media (max-width: 640px) {
+    div[data-testid="stPopover"] {
+        bottom: 16px !important;
+        right: 16px !important;
+    }
+    div[data-testid="stPopover"] > button {
+        padding: 8px 16px !important;
+        font-size: 0.88rem !important;
+    }
+    div[data-testid="stPopoverBody"] {
+        width: calc(100vw - 32px) !important;
+        right: 16px !important;
+        max-height: 75vh !important;
+    }
+}
 </style>
 """

@@ -15,7 +15,8 @@ from ui.components import (
     render_hero,
     render_quality_audit,
     render_teachable_machine_panel,
-    render_diagnosis_view
+    render_diagnosis_view,
+    render_floating_chat
 )
 
 # Configuração da Página Web
@@ -752,3 +753,11 @@ elif page == "⚙️ Configurações & API":
             st.success(f"Modelo recarregado com sucesso! Classes: {', '.join(tm_service.labels)}")
         else:
             st.error(f"Erro ao carregar modelo: {tm_service.load_error}")
+
+# ==========================================
+# Chat Assistente Flutuante (Canto Inferior Direito)
+# ==========================================
+render_floating_chat(
+    gemini_service=gemini_service,
+    current_analysis=st.session_state.current_analysis
+)
