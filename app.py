@@ -85,9 +85,9 @@ def switch_page(new_page: str, reset_analysis: bool = False):
 with st.sidebar:
     st.markdown("""
     <div style="text-align: center; padding: 1.2rem 0 0.8rem 0;">
-        <span style="font-size: 2.8rem;">🌿</span>
-        <h2 style="margin: 0; color: #ffffff; font-weight: 800; font-size: 1.4rem;">PlantCare AI</h2>
-        <p style="color: #a7f3d0; font-size: 0.82rem; margin: 2px 0 0 0;">Saúde Vegetal & Inteligência Artificial</p>
+        <span style="font-size: 2.8rem; filter: drop-shadow(0 0 16px rgba(167, 139, 250, 0.45));">🌿</span>
+        <h2 style="margin: 0; font-weight: 800; font-size: 1.45rem;" class="gradient-text">PlantCare AI</h2>
+        <p style="color: var(--text-muted); font-size: 0.82rem; margin: 4px 0 0 0;">Saúde Vegetal & Inteligência Artificial</p>
     </div>
     """, unsafe_allow_html=True)
 
@@ -112,7 +112,7 @@ with st.sidebar:
     st.markdown("---")
     
     # Status dos Modelos no Sidebar
-    st.markdown("<p style='font-size: 0.8rem; font-weight: 700; color: #9ca3af; text-transform: uppercase;'>Status dos Sistemas</p>", unsafe_allow_html=True)
+    st.markdown("<p style='font-size: 0.8rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;'>Status dos Sistemas</p>", unsafe_allow_html=True)
     
     tm_status_icon = "🟢" if tm_service.is_loaded else "🔴"
     tm_status_text = "Operacional" if tm_service.is_loaded else "Falha ao carregar"
@@ -133,8 +133,9 @@ page = st.session_state.current_page
 # ==========================================
 if page == "🏠 Início":
     render_hero(
-        title="PlantCare AI: Saúde & Diagnóstico Vegetal",
-        subtitle="Identificação de espécies, patologia botânica e recuperação orientada por IA."
+        title="PlantCare AI: <span class=\"gradient-text\">Saúde & Diagnóstico</span>",
+        subtitle="Identificação taxonômica, patologia vegetal e recuperação personalizada com IA multimodal e classificador local.",
+        show_avatar=True
     )
 
     # Métricas Rápidas do Jardim
@@ -157,21 +158,21 @@ if page == "🏠 Início":
         st.markdown(f"""
         <div class="metric-box">
             <div class="metric-label">Aparentemente Saudáveis</div>
-            <div class="metric-value" style="color: #15803d;">{healthy_count}</div>
+            <div class="metric-value" style="color: var(--success);">{healthy_count}</div>
         </div>
         """, unsafe_allow_html=True)
     with col_m3:
         st.markdown(f"""
         <div class="metric-box">
             <div class="metric-label">Sob Atenção / Tratamento</div>
-            <div class="metric-value" style="color: #b45309;">{attention_count}</div>
+            <div class="metric-value" style="color: #f59e0b;">{attention_count}</div>
         </div>
         """, unsafe_allow_html=True)
     with col_m4:
         st.markdown(f"""
         <div class="metric-box">
             <div class="metric-label">Diagnósticos Realizados</div>
-            <div class="metric-value" style="color: #1b4332;">{len(recent_diagnoses)}</div>
+            <div class="metric-value" style="color: var(--primary-light);">{len(recent_diagnoses)}</div>
         </div>
         """, unsafe_allow_html=True)
 
@@ -189,26 +190,26 @@ if page == "🏠 Início":
     with col_cta1:
         st.markdown("""
         <div class="modern-card">
-            <div class="card-title">🔍 Como Funciona o Assistente Inteligente</div>
-            <p style="color: #374151; font-size: 0.95rem; line-height: 1.6;">
-                O <b>PlantCare AI</b> combina duas camadas complementares de inteligência artificial para maximizar a precisão:
+            <div class="card-title">🔍 Como Funciona a Assistente Inteligente</div>
+            <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6;">
+                O <b>PlantCare AI</b> combina duas camadas complementares de inteligência artificial para máxima precisão:
             </p>
-            <ul style="color: #4b5563; font-size: 0.92rem; line-height: 1.7;">
-                <li><b>1. Classificador Local (Google Teachable Machine):</b> Avalia padrões visuais aprendidos localmente em frações de segundo, identificando sinais de alerta.</li>
-                <li><b>2. Raciocínio Botânico (Google Gemini):</b> Analisa a foto em alta definição, interpreta o modelo local, identifica a espécie botânica, investiga causas subjacentes e formula um tratamento seguro passo a passo.</li>
-                <li><b>3. Diferenciação Científica:</b> Separa sintomas observados (como folhas amarelas) de causas reais (como rega incorreta ou fungos), sem suposições precipitadas.</li>
+            <ul style="color: var(--text-muted); font-size: 0.92rem; line-height: 1.7;">
+                <li><b style="color: var(--text);">1. Classificador Local (Google Teachable Machine):</b> Avalia padrões visuais aprendidos localmente em frações de segundo, identificando sinais de alerta.</li>
+                <li><b style="color: var(--text);">2. Raciocínio Botânico (Google Gemini):</b> Analisa a foto em alta definição, interpreta o modelo local, identifica a espécie botânica, investiga causas subjacentes e formula um tratamento seguro passo a passo.</li>
+                <li><b style="color: var(--text);">3. Diferenciação Científica:</b> Separa sintomas observados (como folhas amarelas) de causas reais (como rega incorreta ou fungos), sem suposições precipitadas.</li>
             </ul>
         </div>
         """, unsafe_allow_html=True)
         
     with col_cta2:
         st.markdown("""
-        <div class="modern-card" style="background: #f0fdf4; border-color: #bbf7d0;">
-            <div class="card-title" style="color: #166534;">💡 Dicas de Cuidados Botânicos</div>
-            <p style="font-size: 0.88rem; color: #15803d; line-height: 1.5;">
-                • <b>Drenagem é vida:</b> Mais plantas morrem por excesso de rega (asfixia radicular) do que por sede.<br><br>
-                • <b>Observe a luz:</b> Luz indireta brilhante é o ambiente ideal para a maioria das folhagens domésticas.<br><br>
-                • <b>Poda profilática:</b> Remova folhas doentes com tesoura esterilizada para não infectar galhos sadios.
+        <div class="modern-card" style="border-color: rgba(56, 189, 248, 0.3); background: rgba(56, 189, 248, 0.05);">
+            <div class="card-title" style="color: var(--secondary);">💡 Dicas de Cuidados Botânicos</div>
+            <p style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.6;">
+                • <b style="color: var(--text);">Drenagem é vida:</b> Mais plantas morrem por excesso de rega (asfixia radicular) do que por sede.<br><br>
+                • <b style="color: var(--text);">Observe a luz:</b> Luz indireta brilhante é o ambiente ideal para a maioria das folhagens domésticas.<br><br>
+                • <b style="color: var(--text);">Poda profilática:</b> Remova folhas doentes com tesoura esterilizada para não infectar galhos sadios.
             </p>
         </div>
         """, unsafe_allow_html=True)
@@ -219,10 +220,10 @@ if page == "🏠 Início":
         for diag in recent_diagnoses[:3]:
             dt = diag.get("created_at", "")[:10]
             st.markdown(f"""
-            <div style="background: white; border: 1px solid #e5e7eb; border-radius: 10px; padding: 12px 18px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
+            <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 12px 18px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
                 <div>
-                    <strong>Planta:</strong> {diag.get('plant_name') or 'Análise Avulsa'} &nbsp;|&nbsp; 
-                    <span style="color: #64748b;">Data: {dt}</span>
+                    <strong style="color: var(--text);">Planta:</strong> {diag.get('plant_name') or 'Análise Avulsa'} &nbsp;|&nbsp; 
+                    <span style="color: var(--text-muted);">Data: {dt}</span>
                 </div>
                 <span class="badge-pill badge-healthy">{diag.get('gemini_status') or diag.get('tm_top_class')}</span>
             </div>
@@ -233,8 +234,9 @@ if page == "🏠 Início":
 # ==========================================
 elif page == "🔍 Nova Análise":
     render_hero(
-        title="Diagnóstico de Saúde Vegetal",
-        subtitle="Fotografe a folha ou planta para análise integrada entre Teachable Machine e Google Gemini."
+        title="Diagnóstico de <span class=\"gradient-text\">Saúde Vegetal</span>",
+        subtitle="Fotografe a folha ou planta para análise integrada entre Teachable Machine e Google Gemini.",
+        show_avatar=False
     )
 
     # SE JÁ EXISTIR UM DIAGNÓSTICO ATIVO NA SESSÃO:
@@ -245,11 +247,11 @@ elif page == "🔍 Nova Análise":
 
         # Barra de Ações Superiores Destacadas
         st.markdown("""
-        <div style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border: 1px solid #86efac; border-radius: 16px; padding: 1.2rem 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 4px 14px rgba(27,67,50,0.08);">
+        <div style="background: linear-gradient(135deg, rgba(167, 139, 250, 0.12) 0%, rgba(56, 189, 248, 0.08) 100%); border: 1px solid var(--border-glow); border-radius: 16px; padding: 1.2rem 1.5rem; margin-bottom: 1.5rem; box-shadow: var(--shadow);">
             <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
                 <div>
-                    <h3 style="margin: 0; color: #166534; font-size: 1.35rem; font-weight: 800;">📋 Relatório Fitossanitário Concluído</h3>
-                    <p style="margin: 4px 0 0 0; color: #374151; font-size: 0.92rem;">
+                    <h3 style="margin: 0; color: var(--text); font-size: 1.35rem; font-weight: 800;">📋 Relatório Fitossanitário Concluído</h3>
+                    <p style="margin: 4px 0 0 0; color: var(--text-muted); font-size: 0.92rem;">
                         Resultado gerado com sucesso. Você pode salvar no seu jardim, baixar o laudo ou realizar um novo teste quando quiser.
                     </p>
                 </div>
@@ -485,8 +487,9 @@ Gravidade: {gem_data.get('estado_saude', {}).get('gravidade_estimada')}
 # ==========================================
 elif page == "🌿 Meu Jardim & Acompanhamento":
     render_hero(
-        title="Meu Jardim & Acompanhamento de Saúde",
-        subtitle="Monitore a evolução das suas plantas ao longo do tempo e compare antes x depois da recuperação."
+        title="Meu Jardim & <span class=\"gradient-text\">Acompanhamento</span>",
+        subtitle="Monitore a evolução das suas plantas ao longo do tempo e compare antes x depois da recuperação.",
+        show_avatar=False
     )
 
     all_plants = db.get_all_plants()
@@ -533,17 +536,17 @@ elif page == "🌿 Meu Jardim & Acompanhamento":
                 st.markdown(f"""
                 <div class="modern-card">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <h2 style="margin: 0; color: #1b4332;">{plant['name']}</h2>
+                        <h2 style="margin: 0; color: var(--text);">{plant['name']}</h2>
                         <span class="badge-pill badge-healthy">{plant.get('health_status')}</span>
                     </div>
-                    <p style="color: #64748b; margin: 4px 0 12px 0;">
+                    <p style="color: var(--text-muted); margin: 4px 0 12px 0;">
                         <b>Espécie:</b> {plant.get('species') or 'Não informada'} | 
                         <em>{plant.get('scientific_name') or ''}</em>
                     </p>
-                    <div style="display: flex; gap: 12px; font-size: 0.88rem; color: #4b5563;">
-                        <span>💧 Rega: a cada <b>{plant.get('watering_frequency_days', 3)} dias</b></span>
-                        <span>📅 Última Rega: <b>{plant.get('last_watered_date') or 'Sem registro'}</b></span>
-                        <span>🌱 Cadastrada em: <b>{plant['created_at'][:10]}</b></span>
+                    <div style="display: flex; gap: 14px; font-size: 0.88rem; color: var(--text-muted); flex-wrap: wrap;">
+                        <span>💧 Rega: a cada <b style="color: var(--text);">{plant.get('watering_frequency_days', 3)} dias</b></span>
+                        <span>📅 Última Rega: <b style="color: var(--text);">{plant.get('last_watered_date') or 'Sem registro'}</b></span>
+                        <span>🌱 Cadastrada em: <b style="color: var(--text);">{plant['created_at'][:10]}</b></span>
                     </div>
                 </div>
                 """, unsafe_allow_html=True)
@@ -646,8 +649,9 @@ elif page == "🌿 Meu Jardim & Acompanhamento":
 # ==========================================
 elif page == "🧪 Validação & Testes de IA":
     render_hero(
-        title="Validação & Testes dos Modelos de IA",
-        subtitle="Auditoria de métricas, testes de estresse, matriz de confusão e verificação de redundância."
+        title="Validação & <span class=\"gradient-text\">Testes de IA</span>",
+        subtitle="Auditoria de métricas, testes de estresse, matriz de confusão e verificação de redundância.",
+        show_avatar=False
     )
 
     tab_t1, tab_t2, tab_t3 = st.tabs(["🔬 Teste do Teachable Machine Local", "🌐 Teste de Redundância do Gemini", "📊 Avaliação de Desempenho"])
@@ -718,8 +722,9 @@ elif page == "🧪 Validação & Testes de IA":
 # ==========================================
 elif page == "⚙️ Configurações & API":
     render_hero(
-        title="Configurações & Integrações",
-        subtitle="Gerenciamento de credenciais da API Gemini, diretórios de modelos e parâmetros do sistema."
+        title="Configurações & <span class=\"gradient-text\">Integrações</span>",
+        subtitle="Gerenciamento de credenciais da API Gemini, diretórios de modelos e parâmetros do sistema.",
+        show_avatar=False
     )
 
     st.markdown("##### 1. Chave de API do Google Gemini")

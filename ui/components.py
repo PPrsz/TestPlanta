@@ -2,12 +2,51 @@ import streamlit as st
 from typing import Dict, Any, List, Optional
 from PIL import Image
 
-def render_hero(title: str = "PlantCare AI", subtitle: str = "Diagnóstico Botânico Inteligente com Teachable Machine e Google Gemini"):
-    """Renderiza cabeçalho principal imersivo com identidade botânica."""
+def render_hero(
+    title: str = "Conheça o <span class=\"gradient-text\">PlantCare AI</span>",
+    subtitle: str = "Sua assistente inteligente especializada no diagnóstico e recuperação da saúde vegetal com IA multimodal e Teachable Machine.",
+    show_avatar: bool = True
+):
+    """Renderiza cabeçalho futurista estilo Nova com avatar animado e orbs."""
+    avatar_html = ""
+    if show_avatar:
+        avatar_html = """
+        <div class="hero-avatar-area">
+            <div class="orb orb-1"></div>
+            <div class="orb orb-2"></div>
+            <div class="orb orb-3"></div>
+            <div class="avatar-container">
+                <div class="avatar-ring"></div>
+                <div class="avatar-ring ring-2"></div>
+                <div class="pulse-ring"></div>
+                <div class="avatar">
+                    <div class="avatar-face">
+                        <div class="eye left"></div>
+                        <div class="eye right"></div>
+                        <div class="mouth"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        """
+
     st.markdown(f"""
-    <div class="plant-hero-card">
-        <h1 class="plant-hero-title">🌿 {title}</h1>
-        <p class="plant-hero-subtitle">{subtitle}</p>
+    <div class="nova-hero-container">
+        <div class="nova-hero-grid">
+            <div>
+                <div class="badge">
+                    <span class="badge-dot"></span>
+                    Assistente Virtual & Saúde Botânica
+                </div>
+                <h1 class="nova-hero-title">
+                    {title}
+                </h1>
+                <p class="nova-hero-desc">
+                    {subtitle}
+                </p>
+            </div>
+            {avatar_html}
+        </div>
     </div>
     """, unsafe_allow_html=True)
 
@@ -20,15 +59,15 @@ def render_quality_audit(audit: Dict[str, Any]):
     icon = "✅" if is_ok else "⚠️"
     
     st.markdown(f"""
-    <div style="background: #f8faf8; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px 16px; margin: 10px 0;">
+    <div style="background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 14px; padding: 14px 18px; margin: 12px 0;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-            <strong style="color: #1b4332; font-size: 0.95rem;">📸 Auditoria da Qualidade Fotográfica:</strong>
+            <strong style="color: var(--text); font-size: 0.95rem;">📸 Auditoria da Qualidade Fotográfica:</strong>
             <span class="badge-pill {badge_class}">{icon} {rating}</span>
         </div>
-        <div style="font-size: 0.85rem; color: #4b5563; display: flex; gap: 15px; flex-wrap: wrap;">
-            <span>📐 Resolução: <b>{audit.get('width')}x{audit.get('height')}px</b></span>
-            <span>💡 Brilho Médio: <b>{audit.get('brightness')}/255</b></span>
-            <span>🎯 Nitidez Estimada: <b>{audit.get('sharpness')}</b></span>
+        <div style="font-size: 0.86rem; color: var(--text-muted); display: flex; gap: 16px; flex-wrap: wrap;">
+            <span>📐 Resolução: <b style="color: var(--text);">{audit.get('width')}x{audit.get('height')}px</b></span>
+            <span>💡 Brilho Médio: <b style="color: var(--text);">{audit.get('brightness')}/255</b></span>
+            <span>🎯 Nitidez Estimada: <b style="color: var(--text);">{audit.get('sharpness')}</b></span>
         </div>
     </div>
     """, unsafe_allow_html=True)
@@ -41,7 +80,7 @@ def render_quality_audit(audit: Dict[str, Any]):
                 st.info(f"💡 **Recomendação:** {rec}")
 
 def render_teachable_machine_panel(tm_result: Dict[str, Any]):
-    """Renderiza o cartão de classificação especializada do Teachable Machine."""
+    """Renderiza o cartão de classificação especializada do Teachable Machine com estilo Nova."""
     if not tm_result.get("success"):
         st.warning(f"⚠️ Teachable Machine: {tm_result.get('error') or tm_result.get('summary')}")
         return
@@ -56,36 +95,35 @@ def render_teachable_machine_panel(tm_result: Dict[str, Any]):
     st.markdown(f"""
     <div class="modern-card">
         <div class="card-title">
-            <span>🔬 Classificador Local: Google Teachable Machine</span>
+            <span>🔬 Classificador Visual Local: Google Teachable Machine</span>
         </div>
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
             <div>
-                <span style="font-size: 1.15rem; font-weight: 700; color: #1e293b;">{top_class}</span>
+                <span style="font-size: 1.25rem; font-weight: 700; color: var(--text);">{top_class}</span>
             </div>
             <span class="badge-pill {badge_type}">{status_icon} {conf_pct:.1f}% de Certeza Local</span>
         </div>
-        <div style="font-size: 0.88rem; color: #475569; margin-bottom: 14px;">
+        <div style="font-size: 0.92rem; color: var(--text-muted); margin-bottom: 14px;">
             {tm_result.get('summary')}
         </div>
     </div>
     """, unsafe_allow_html=True)
 
     # Exibição da distribuição de todas as classes
-    with st.expander("📊 Ver distribuição de probabilidades do Teachable Machine", expanded=False):
+    with st.expander("📊 Ver distribuição de probabilidades do modelo local", expanded=False):
         for class_name, score in tm_result.get("sorted_predictions", []):
             pct = score * 100
             st.write(f"**{class_name}**: {pct:.1f}%")
             st.progress(min(max(pct / 100.0, 0.0), 1.0))
 
 def render_diagnosis_view(gemini_data: Dict[str, Any], tm_result: Optional[Dict[str, Any]] = None):
-    """Renderiza a tela completa de diagnóstico estruturado com cartões especializados."""
+    """Renderiza a tela completa de diagnóstico estruturado com tema futurista Nova."""
     
     ident = gemini_data.get("identificacao", {})
     saude = gemini_data.get("estado_saude", {})
     sintomas = gemini_data.get("analise_sintomas", {})
     coerencia = gemini_data.get("coerencia_teachable_machine", {})
     tratamento = gemini_data.get("plano_tratamento", {})
-    perguntas = gemini_data.get("perguntas_complementares", [])
     transparencia = gemini_data.get("limitacoes_e_transparencia", "")
 
     status = saude.get("status", "Em Avaliação")
@@ -113,15 +151,15 @@ def render_diagnosis_view(gemini_data: Dict[str, Any], tm_result: Optional[Dict[
         <div class="modern-card">
             <div class="card-title">🌿 Identificação Botânica</div>
             <div style="margin-bottom: 8px;">
-                <span style="font-size: 1.4rem; font-weight: 800; color: #1b4332;">{ident.get('nome_popular', 'Espécie em análise')}</span>
+                <span style="font-size: 1.45rem; font-weight: 800; color: var(--primary-light);">{ident.get('nome_popular', 'Espécie em análise')}</span>
                 <br>
-                <em style="color: #64748b; font-size: 1.05rem;">{ident.get('nome_cientifico', 'Classificação científica')}</em>
+                <em style="color: var(--secondary); font-size: 1rem;">{ident.get('nome_cientifico', 'Classificação científica')}</em>
             </div>
-            <p style="font-size: 0.92rem; color: #334155; margin-top: 10px; line-height: 1.5;">
+            <p style="font-size: 0.92rem; color: var(--text-muted); margin-top: 10px; line-height: 1.5;">
                 {ident.get('caracteristicas_gerais', '')}
             </p>
-            <div style="font-size: 0.85rem; color: #64748b; margin-top: 8px;">
-                Certeza da identificação taxonômica: <b>{ident.get('confianca_identificacao', 'Média')}</b>
+            <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 8px;">
+                Certeza da identificação taxonômica: <b style="color: var(--text);">{ident.get('confianca_identificacao', 'Média')}</b>
             </div>
         </div>
         """, unsafe_allow_html=True)
@@ -142,10 +180,10 @@ def render_diagnosis_view(gemini_data: Dict[str, Any], tm_result: Optional[Dict[
                 </div>
                 <div class="metric-box" style="flex: 1;">
                     <div class="metric-label">Convicção</div>
-                    <div class="metric-value" style="font-size: 1.1rem; color: #1b4332;">{saude.get('confianca_diagnostico', 'Média')}</div>
+                    <div class="metric-value" style="font-size: 1.15rem; color: var(--primary-light);">{saude.get('confianca_diagnostico', 'Média')}</div>
                 </div>
             </div>
-            <p style="font-size: 0.88rem; color: #475569; margin-top: 10px; margin-bottom: 0;">
+            <p style="font-size: 0.88rem; color: var(--text-muted); margin-top: 10px; margin-bottom: 0;">
                 {saude.get('resumo_geral', '')}
             </p>
         </div>
@@ -183,12 +221,12 @@ def render_diagnosis_view(gemini_data: Dict[str, Any], tm_result: Optional[Dict[
     if coerencia:
         conc = coerencia.get("concordancia", "Complementa")
         st.markdown(f"""
-        <div class="modern-card" style="border-left: 4px solid #52b788;">
+        <div class="modern-card" style="border-left: 4px solid var(--secondary);">
             <div class="card-title">🤝 Cruzamento de IA: Teachable Machine + Gemini</div>
-            <p style="font-size: 0.92rem; color: #1e293b; margin-bottom: 6px;">
+            <p style="font-size: 0.92rem; color: var(--text); margin-bottom: 6px;">
                 <strong>Consistência com Modelo Local:</strong> <span class="badge-pill badge-info">{conc}</span>
             </p>
-            <p style="font-size: 0.9rem; color: #475569; margin: 0; line-height: 1.5;">
+            <p style="font-size: 0.9rem; color: var(--text-muted); margin: 0; line-height: 1.5;">
                 {coerencia.get('explicacao', '')}
             </p>
         </div>
@@ -260,29 +298,35 @@ def render_diagnosis_view(gemini_data: Dict[str, Any], tm_result: Optional[Dict[
 
 def render_floating_chat(gemini_service, current_analysis: Optional[Dict[str, Any]] = None):
     """
-    Renderiza um widget de chat flutuante no canto inferior direito,
-    atuando como assistente virtual botânico com Google Gemini.
+    Renderiza o widget flutuante de chat com a identidade visual da Assistente Nova,
+    no canto inferior direito, com avatar animado e inteligência Gemini.
     """
     if "chat_messages" not in st.session_state:
         st.session_state.chat_messages = [
             {
                 "role": "assistant",
-                "content": "Olá! Sou seu **Agrônomo Virtual**. 🌿\n\nComo posso ajudar suas plantas hoje? Pode me perguntar sobre frequência de rega, adubos, podas, sol ou dúvidas sobre o diagnóstico!"
+                "content": "Olá! Eu sou a **Nova**, sua assistente botânica com IA. ✨🌿\n\nComo posso ajudar você e suas plantas hoje? Pode me perguntar sobre regas, sintomas, iluminação ou tirar dúvidas sobre o seu diagnóstico!"
             }
         ]
 
     # Popover flutuante posicionado no canto inferior direito
-    with st.popover("💬 Assistente Virtual", help="Abra o chat para tirar dúvidas com a IA botânica"):
-        # Cabeçalho do Chat
+    with st.popover("✨ Conversar com a Nova", help="Abra o chat para tirar dúvidas botânicas em tempo real"):
+        # Cabeçalho do Chat estilo Nova
         st.markdown("""
-        <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid #f0fdf4; padding-bottom: 10px; margin-bottom: 12px;">
+        <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 12px;">
             <div style="display: flex; align-items: center; gap: 10px;">
-                <span style="font-size: 1.6rem;">🌱</span>
+                <div style="width: 38px; height: 38px; background: linear-gradient(145deg, #181824, #242436); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 0 2px rgba(167, 139, 250, 0.4);">
+                    <div style="position: relative; width: 55%; height: 45%;">
+                        <div style="position: absolute; width: 6px; height: 6px; background: #f1f5f9; border-radius: 50%; top: 20%; left: 16%;"></div>
+                        <div style="position: absolute; width: 6px; height: 6px; background: #f1f5f9; border-radius: 50%; top: 20%; right: 16%;"></div>
+                        <div style="position: absolute; bottom: 5%; left: 50%; transform: translateX(-50%); width: 10px; height: 5px; border: 1.5px solid #f1f5f9; border-top: none; border-radius: 0 0 10px 10px;"></div>
+                    </div>
+                </div>
                 <div>
-                    <strong style="color: #1b4332; font-size: 1.05rem; display: block; line-height: 1.2;">Agrônomo Virtual</strong>
-                    <span style="font-size: 0.76rem; color: #15803d; font-weight: 600; display: inline-flex; align-items: center; gap: 4px;">
-                        <span style="display: inline-block; width: 7px; height: 7px; background: #22c55e; border-radius: 50%;"></span>
-                        Online via Google Gemini
+                    <strong style="color: var(--text); font-size: 1.05rem; display: block; font-family: 'Space Grotesk', sans-serif;">Nova · Assistente IA</strong>
+                    <span style="font-size: 0.76rem; color: var(--success); font-weight: 500; display: inline-flex; align-items: center; gap: 4px;">
+                        <span style="display: inline-block; width: 7px; height: 7px; background: var(--success); border-radius: 50%; box-shadow: 0 0 8px var(--success);"></span>
+                        Online agora via Gemini
                     </span>
                 </div>
             </div>
@@ -297,14 +341,14 @@ def render_floating_chat(gemini_service, current_analysis: Optional[Dict[str, An
             p_health = g_data.get("estado_saude", {}).get("status", "Em avaliação")
             context_desc = f"Planta: {p_name} | Diagnóstico: {p_health}"
             st.markdown(f"""
-            <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 6px 10px; font-size: 0.8rem; color: #166534; margin-bottom: 10px;">
-                🌿 <b>Contexto ativo:</b> {p_name} ({p_health})
+            <div style="background: rgba(167, 139, 250, 0.08); border: 1px solid rgba(167, 139, 250, 0.25); border-radius: 10px; padding: 6px 12px; font-size: 0.8rem; color: var(--primary-light); margin-bottom: 10px;">
+                ✨ <b>Contexto ativo:</b> {p_name} ({p_health})
             </div>
             """, unsafe_allow_html=True)
 
         # Sugestões rápidas de perguntas quando o chat tem poucas mensagens
         if len(st.session_state.chat_messages) <= 2:
-            st.markdown("<p style='font-size: 0.78rem; font-weight: 600; color: #64748b; margin-bottom: 6px;'>Perguntas frequentes:</p>", unsafe_allow_html=True)
+            st.markdown("<p style='font-size: 0.78rem; font-weight: 600; color: var(--text-muted); margin-bottom: 6px;'>Sugestões rápidas:</p>", unsafe_allow_html=True)
             col_chip1, col_chip2 = st.columns(2)
             with col_chip1:
                 if st.button("💧 Como regar certo?", key="btn_chip_rega", use_container_width=True):
@@ -327,7 +371,7 @@ def render_floating_chat(gemini_service, current_analysis: Optional[Dict[str, An
         chat_box = st.container(height=290)
         with chat_box:
             for m in st.session_state.chat_messages:
-                avatar = "🌿" if m["role"] == "assistant" else "👤"
+                avatar = "✨" if m["role"] == "assistant" else "👤"
                 with st.chat_message(m["role"], avatar=avatar):
                     st.markdown(m["content"])
 
@@ -337,7 +381,7 @@ def render_floating_chat(gemini_service, current_analysis: Optional[Dict[str, An
             with col_in:
                 user_query = st.text_input(
                     "Mensagem",
-                    placeholder="Pergunte sobre regas, folhas, pragas...",
+                    placeholder="Digite sua dúvida sobre plantas...",
                     label_visibility="collapsed"
                 )
             with col_btn:
@@ -353,19 +397,26 @@ def render_floating_chat(gemini_service, current_analysis: Optional[Dict[str, An
                 st.session_state.chat_messages = [
                     {
                         "role": "assistant",
-                        "content": "Conversa reiniciada! No que posso ajudar com suas plantas agora? 🌿"
+                        "content": "Conversa reiniciada! Como posso ajudar você agora? ✨🌿"
                     }
                 ]
                 st.rerun()
 
-def _send_chat_message(text: str, gemini_service, context: Optional[str] = None):
-    """Envia a mensagem ao Gemini e anexa a resposta no histórico."""
+def _send_chat_message(text: str, gemini_service=None, context: Optional[str] = None):
+    """Envia a mensagem ao Gemini e anexa a resposta no histórico com tolerância máxima a falhas."""
     st.session_state.chat_messages.append({"role": "user", "content": text})
     
-    # Garantir que o serviço esteja atualizado e possua o método chat
-    if not hasattr(gemini_service, "chat"):
-        from services.gemini_service import GeminiPlantDoctorService
-        gemini_service = GeminiPlantDoctorService()
+    # Garantir que o serviço exista e possua o método chat
+    if gemini_service is None or not hasattr(gemini_service, "chat"):
+        try:
+            from services.gemini_service import GeminiPlantDoctorService
+            gemini_service = GeminiPlantDoctorService()
+        except Exception as e:
+            st.session_state.chat_messages.append({
+                "role": "assistant",
+                "content": f"⚠️ Não foi possível inicializar o assistente: {str(e)}"
+            })
+            return
 
     try:
         answer = gemini_service.chat(

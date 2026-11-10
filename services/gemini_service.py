@@ -257,8 +257,10 @@ Agrônomo Virtual:"""
                         temperature=0.4,
                     )
                 )
-                if response and response.text:
-                    return response.text.strip()
+                if response:
+                    text_out = getattr(response, "text", None)
+                    if text_out:
+                        return text_out.strip()
             except Exception:
                 continue
 

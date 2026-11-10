@@ -1,424 +1,704 @@
 """
-Estilos e Identidade Visual para PlantCare AI / Agrônomo Inteligente.
-Paleta inspirada na natureza: Verde-Floresta, Verde-Sálvia, Branco e Tons Neutros.
+Sistema de Design Nova para PlantCare AI.
+Inspirado na interface moderna da Assistente Virtual Nova:
+Fundo Dark Obsidian (#0a0a0f), Tipografia Space Grotesk + Inter,
+Gradientes Eletrizantes (Violeta, Ciano, Rosa), Avatar Animado com Orbs e Efeitos Futuristas.
 """
 
 CUSTOM_CSS = """
 <style>
-/* Fonte e Reset Suave */
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+/* ===== Fontes Modernas: Inter & Space Grotesk ===== */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;600;700;800&display=swap');
 
-html, body, [class*="css"] {
-    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-    color: #1f2937;
+/* ===== Variáveis do Tema Nova ===== */
+:root {
+  --bg: #0a0a0f;
+  --bg-elevated: #12121a;
+  --bg-card: #16161f;
+  --border: rgba(255, 255, 255, 0.08);
+  --border-glow: rgba(167, 139, 250, 0.3);
+  --text: #f1f5f9;
+  --text-muted: #94a3b8;
+  --primary: #a78bfa;
+  --primary-light: #c4b5fd;
+  --secondary: #38bdf8;
+  --accent: #f472b6;
+  --success: #34d399;
+  --gradient: linear-gradient(135deg, #a78bfa 0%, #38bdf8 50%, #f472b6 100%);
+  --gradient-botanical: linear-gradient(135deg, #34d399 0%, #38bdf8 50%, #a78bfa 100%);
+  --shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  --radius: 22px;
+  --radius-sm: 14px;
 }
 
-/* Esconder menu de opções padrão e rodapé sem esconder o botão lateral */
-#MainMenu {
-    visibility: hidden;
+/* ===== Reset & Base da Aplicação ===== */
+html, body, [class*="css"], [data-testid="stAppViewContainer"] {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
+  background-color: var(--bg) !important;
+  color: var(--text) !important;
+  line-height: 1.6;
 }
 
-footer {
-    visibility: hidden;
+/* Cabeçalhos em Space Grotesk */
+h1, h2, h3, h4, h5, h6, .brand-font {
+  font-family: 'Space Grotesk', sans-serif !important;
+  letter-spacing: -0.025em;
+  color: var(--text) !important;
 }
 
-/* O header não deve ser ocultado totalmente para manter o botão de reabrir a barra lateral acessível */
+/* Ocultar elementos padrão do Streamlit mantendo a usabilidade */
+#MainMenu { visibility: hidden; }
+footer { visibility: hidden; }
+
 header[data-testid="stHeader"] {
-    background: transparent !important;
-    pointer-events: none !important;
+  background: transparent !important;
+  pointer-events: none !important;
 }
 
 header[data-testid="stHeader"] [data-testid="stToolbar"],
 header[data-testid="stHeader"] [data-testid="stDecoration"],
 header[data-testid="stHeader"] [data-testid="stStatusWidget"] {
-    display: none !important;
-    visibility: hidden !important;
+  display: none !important;
+  visibility: hidden !important;
 }
 
-/* Reativar cliques e estilizar o botão lateral que expande/recolhe a barra lateral */
+/* Botão Lateral para Recolher/Expandir Menu com Estilo Nova */
 [data-testid="stSidebarCollapsedControl"],
 [data-testid="collapsedControl"],
 header button {
-    pointer-events: auto !important;
+  pointer-events: auto !important;
 }
 
 [data-testid="stSidebarCollapsedControl"],
 [data-testid="collapsedControl"] {
-    visibility: visible !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    position: fixed !important;
-    top: 14px !important;
-    left: 14px !important;
-    z-index: 999999 !important;
-    width: 44px !important;
-    height: 44px !important;
-    background: #ffffff !important;
-    color: #1b4332 !important;
-    border: 2px solid #52b788 !important;
-    border-radius: 12px !important;
-    box-shadow: 0 4px 14px rgba(27, 67, 50, 0.25) !important;
-    cursor: pointer !important;
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  visibility: visible !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  position: fixed !important;
+  top: 14px !important;
+  left: 14px !important;
+  z-index: 999999 !important;
+  width: 44px !important;
+  height: 44px !important;
+  background: var(--bg-card) !important;
+  color: var(--primary-light) !important;
+  border: 1.5px solid var(--border-glow) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 4px 18px rgba(167, 139, 250, 0.3) !important;
+  cursor: pointer !important;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
 [data-testid="stSidebarCollapsedControl"]:hover,
 [data-testid="collapsedControl"]:hover {
-    background: #d8f3dc !important;
-    border-color: #1b4332 !important;
-    color: #1b4332 !important;
-    transform: scale(1.08) !important;
-    box-shadow: 0 6px 18px rgba(27, 67, 50, 0.35) !important;
+  background: var(--bg-elevated) !important;
+  border-color: var(--primary) !important;
+  transform: scale(1.08) !important;
+  box-shadow: 0 8px 25px rgba(167, 139, 250, 0.5) !important;
 }
 
 [data-testid="stSidebarCollapsedControl"] svg,
 [data-testid="collapsedControl"] svg {
-    fill: #1b4332 !important;
-    stroke: #1b4332 !important;
-    width: 22px !important;
-    height: 22px !important;
+  fill: var(--primary-light) !important;
+  stroke: var(--primary-light) !important;
+  width: 20px !important;
+  height: 20px !important;
 }
 
-/* Botão de fechar dentro da própria sidebar */
-[data-testid="stSidebarCollapseButton"] {
-    color: #ffffff !important;
-    background: rgba(255, 255, 255, 0.12) !important;
-    border-radius: 8px !important;
-    transition: background 0.2s ease !important;
-}
-
-[data-testid="stSidebarCollapseButton"]:hover {
-    background: rgba(255, 255, 255, 0.25) !important;
-}
-
-[data-testid="stSidebarCollapseButton"] svg {
-    fill: #ffffff !important;
-}
-
-/* Variáveis de Cores */
-:root {
-    --forest-dark: #1b4332;
-    --forest-medium: #2d6a4f;
-    --forest-light: #40916c;
-    --sage-bright: #52b788;
-    --sage-soft: #74c69d;
-    --sage-pale: #b7e4c7;
-    --sage-subtle: #d8f3dc;
-    --mint-bg: #f4fbf7;
-    --card-bg: #ffffff;
-    --border-light: #e5e7eb;
-    --text-primary: #111827;
-    --text-secondary: #4b5563;
-    --text-muted: #6b7280;
-    --danger-red: #dc2626;
-    --warning-orange: #d97706;
-    --info-blue: #2563eb;
-}
-
-/* Barra lateral elegante */
+/* ===== Barra Lateral Estilo Dark Obsidian ===== */
 [data-testid="stSidebar"] {
-    background-color: #081c15 !important;
-    background-image: linear-gradient(180deg, #081c15 0%, #1b4332 100%) !important;
+  background-color: var(--bg) !important;
+  background-image: linear-gradient(180deg, #0e0e17 0%, #0a0a0f 100%) !important;
+  border-right: 1px solid var(--border) !important;
 }
 
 [data-testid="stSidebar"] * {
-    color: #f3f4f6 !important;
+  color: var(--text) !important;
 }
 
 [data-testid="stSidebar"] .stRadio label {
-    font-size: 1.02rem;
-    font-weight: 500;
-    padding: 6px 12px;
-    border-radius: 8px;
-    transition: all 0.2s ease;
+  font-size: 0.98rem;
+  font-weight: 500;
+  padding: 8px 14px;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
 }
 
 [data-testid="stSidebar"] .stRadio label:hover {
-    background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.04);
+  border-color: var(--border);
 }
 
-/* Cabeçalho Principal */
-.plant-hero-card {
-    background: linear-gradient(135deg, #1b4332 0%, #2d6a4f 100%);
-    color: white;
-    padding: 2.2rem 2.5rem;
-    border-radius: 20px;
-    margin-bottom: 2rem;
-    box-shadow: 0 10px 25px -5px rgba(27, 67, 50, 0.25);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+[data-testid="stSidebarCollapseButton"] {
+  color: var(--text-muted) !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+  border-radius: 8px !important;
 }
 
-.plant-hero-title {
-    font-size: 2.2rem;
-    font-weight: 800;
-    margin: 0;
-    letter-spacing: -0.02em;
-    color: #ffffff;
-    display: flex;
-    align-items: center;
-    gap: 12px;
+/* ===== Gradiente de Texto Nova ===== */
+.gradient-text {
+  background: var(--gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  display: inline-block;
 }
 
-.plant-hero-subtitle {
-    font-size: 1.05rem;
-    font-weight: 400;
-    color: #d8f3dc;
-    margin-top: 0.5rem;
-    margin-bottom: 0;
-    line-height: 1.5;
+.gradient-text-botanical {
+  background: var(--gradient-botanical);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  display: inline-block;
 }
 
-/* Cartões Gerais */
+/* ===== Badges Flutuantes ===== */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(167, 139, 250, 0.12);
+  border: 1px solid rgba(167, 139, 250, 0.3);
+  color: var(--primary-light);
+  padding: 0.4rem 1.1rem;
+  border-radius: 999px;
+  font-size: 0.86rem;
+  font-weight: 500;
+  margin-bottom: 1rem;
+}
+
+.badge-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--success);
+  border-radius: 50%;
+  animation: pulse-dot 2s infinite;
+  box-shadow: 0 0 10px var(--success);
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.3); }
+}
+
+/* ===== Hero Section Nova ===== */
+.nova-hero-container {
+  position: relative;
+  background: linear-gradient(135deg, rgba(22, 22, 31, 0.7) 0%, rgba(18, 18, 26, 0.85) 100%);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 3rem 2.8rem;
+  margin-bottom: 2.2rem;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(25px);
+}
+
+.nova-hero-grid {
+  display: grid;
+  grid-template-columns: 1.35fr 1fr;
+  align-items: center;
+  gap: 2.5rem;
+  position: relative;
+  z-index: 2;
+}
+
+@media (max-width: 900px) {
+  .nova-hero-grid {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+}
+
+.nova-hero-title {
+  font-family: 'Space Grotesk', sans-serif !important;
+  font-size: clamp(2.2rem, 4vw, 3.2rem) !important;
+  font-weight: 800 !important;
+  line-height: 1.15 !important;
+  letter-spacing: -0.03em !important;
+  margin: 0 0 1rem 0 !important;
+}
+
+.nova-hero-desc {
+  color: var(--text-muted);
+  font-size: 1.05rem;
+  line-height: 1.6;
+  margin-bottom: 1.8rem;
+  max-width: 540px;
+}
+
+/* Orbs Brilhantes em Background */
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(70px);
+  opacity: 0.45;
+  animation: orb-float 9s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.orb-1 {
+  width: 260px;
+  height: 260px;
+  background: #a78bfa;
+  top: -10%;
+  right: 15%;
+}
+
+.orb-2 {
+  width: 220px;
+  height: 220px;
+  background: #38bdf8;
+  bottom: -15%;
+  right: 5%;
+  animation-delay: -3.5s;
+}
+
+.orb-3 {
+  width: 170px;
+  height: 170px;
+  background: #f472b6;
+  top: 35%;
+  right: 28%;
+  animation-delay: -6s;
+}
+
+@keyframes orb-float {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(25px, -25px) scale(1.06); }
+  66% { transform: translate(-20px, 15px) scale(0.95); }
+}
+
+/* ===== Avatar Animado da Nova ===== */
+.hero-avatar-area {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 280px;
+}
+
+.avatar-container {
+  position: relative;
+  z-index: 3;
+}
+
+.avatar-ring {
+  position: absolute;
+  inset: -18px;
+  border: 2px solid rgba(167, 139, 250, 0.35);
+  border-radius: 50%;
+  animation: spin-slow 22s linear infinite;
+}
+
+.avatar-ring.ring-2 {
+  inset: -34px;
+  border-color: rgba(56, 189, 248, 0.25);
+  animation-direction: reverse;
+  animation-duration: 32s;
+}
+
+@keyframes spin-slow {
+  to { transform: rotate(360deg); }
+}
+
+.pulse-ring {
+  position: absolute;
+  inset: -10px;
+  border: 2px solid rgba(167, 139, 250, 0.4);
+  border-radius: 50%;
+  animation: pulse-expand 2.8s ease-out infinite;
+}
+
+@keyframes pulse-expand {
+  0% { transform: scale(1); opacity: 0.6; }
+  100% { transform: scale(1.35); opacity: 0; }
+}
+
+.avatar {
+  width: 150px;
+  height: 150px;
+  background: linear-gradient(145deg, #181824, #242436);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  box-shadow: 
+    0 0 0 3px rgba(167, 139, 250, 0.25),
+    0 20px 50px rgba(0, 0, 0, 0.6),
+    inset 0 0 35px rgba(167, 139, 250, 0.15);
+  animation: avatar-float 4s ease-in-out infinite;
+}
+
+@keyframes avatar-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.avatar-face {
+  position: relative;
+  width: 60%;
+  height: 50%;
+}
+
+.eye {
+  position: absolute;
+  width: 15px;
+  height: 15px;
+  background: #f1f5f9;
+  border-radius: 50%;
+  top: 20%;
+  animation: blink 4s infinite;
+}
+
+.eye.left { left: 16%; }
+.eye.right { right: 16%; }
+
+.eye::after {
+  content: '';
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  background: #181824;
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+@keyframes blink {
+  0%, 94%, 98%, 100% { transform: scaleY(1); }
+  96% { transform: scaleY(0.1); }
+}
+
+.mouth {
+  position: absolute;
+  bottom: 8%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 24px;
+  height: 11px;
+  border: 2.5px solid #f1f5f9;
+  border-top: none;
+  border-radius: 0 0 20px 20px;
+}
+
+/* ===== Cartões Glassmorphic ===== */
 .modern-card {
-    background: #ffffff;
-    border: 1px solid #e5e7eb;
-    border-radius: 16px;
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.6rem;
+  margin-bottom: 1.6rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
 }
 
 .modern-card:hover {
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+  transform: translateY(-3px);
+  border-color: var(--border-glow);
+  box-shadow: 0 16px 40px rgba(167, 139, 250, 0.12);
 }
 
 .card-title {
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: #1b4332;
-    margin-bottom: 1rem;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    border-bottom: 2px solid #f0fdf4;
-    padding-bottom: 8px;
+  font-family: 'Space Grotesk', sans-serif !important;
+  font-size: 1.22rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 10px;
 }
 
-/* Badges e Pílulas de Status */
-.badge-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 6px 14px;
-    border-radius: 9999px;
-    font-size: 0.88rem;
-    font-weight: 600;
-    letter-spacing: 0.01em;
-}
-
-.badge-healthy {
-    background-color: #dcfce7;
-    color: #15803d;
-    border: 1px solid #86efac;
-}
-
-.badge-warning {
-    background-color: #fef3c7;
-    color: #b45309;
-    border: 1px solid #fcd34d;
-}
-
-.badge-danger {
-    background-color: #fee2e2;
-    color: #b91c1c;
-    border: 1px solid #fca5a5;
-}
-
-.badge-info {
-    background-color: #e0f2fe;
-    color: #0369a1;
-    border: 1px solid #7dd3fc;
-}
-
-.badge-neutral {
-    background-color: #f3f4f6;
-    color: #374151;
-    border: 1px solid #d1d5db;
-}
-
-/* Barra de Progresso Customizada */
-.custom-progress-bg {
-    background-color: #e5e7eb;
-    border-radius: 8px;
-    height: 12px;
-    overflow: hidden;
-    margin: 8px 0;
-}
-
-.custom-progress-fill {
-    background: linear-gradient(90deg, #52b788 0%, #2d6a4f 100%);
-    height: 100%;
-    border-radius: 8px;
-    transition: width 0.4s ease;
-}
-
-/* Caixas de Métricas Rápidas */
+/* ===== Caixas de Métricas Rápidas ===== */
 .metric-box {
-    background-color: #f8faf8;
-    border: 1px solid #e2e8f0;
-    border-radius: 12px;
-    padding: 1rem;
-    text-align: center;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 1.2rem;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.metric-box:hover {
+  border-color: var(--border-glow);
+  transform: translateY(-2px);
 }
 
 .metric-label {
-    font-size: 0.8rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    color: #64748b;
-    margin-bottom: 4px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  margin-bottom: 6px;
 }
 
 .metric-value {
-    font-size: 1.4rem;
-    font-weight: 800;
-    color: #1e293b;
+  font-family: 'Space Grotesk', sans-serif !important;
+  font-size: 1.7rem;
+  font-weight: 800;
+  color: var(--text);
 }
 
-/* Etapas do Tratamento */
+/* ===== Badges e Pílulas de Status ===== */
+.badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  border-radius: 9999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.badge-healthy {
+  background: rgba(52, 211, 153, 0.12);
+  color: #34d399;
+  border: 1px solid rgba(52, 211, 153, 0.35);
+}
+
+.badge-warning {
+  background: rgba(251, 191, 36, 0.12);
+  color: #fbbf24;
+  border: 1px solid rgba(251, 191, 36, 0.35);
+}
+
+.badge-danger {
+  background: rgba(244, 114, 182, 0.14);
+  color: #f472b6;
+  border: 1px solid rgba(244, 114, 182, 0.35);
+}
+
+.badge-info {
+  background: rgba(56, 189, 248, 0.12);
+  color: #38bdf8;
+  border: 1px solid rgba(56, 189, 248, 0.35);
+}
+
+.badge-neutral {
+  background: rgba(255, 255, 255, 0.06);
+  color: #cbd5e1;
+  border: 1px solid var(--border);
+}
+
+/* Indicadores de Gravidade */
+.severity-pill-nenhuma { background: rgba(52, 211, 153, 0.15); color: #34d399; padding: 4px 10px; border-radius: 8px; font-weight: 600; }
+.severity-pill-baixa { background: rgba(56, 189, 248, 0.15); color: #38bdf8; padding: 4px 10px; border-radius: 8px; font-weight: 600; }
+.severity-pill-média { background: rgba(251, 191, 36, 0.15); color: #fbbf24; padding: 4px 10px; border-radius: 8px; font-weight: 600; }
+.severity-pill-alta { background: rgba(249, 115, 22, 0.18); color: #fb923c; padding: 4px 10px; border-radius: 8px; font-weight: 600; }
+.severity-pill-crítica { background: rgba(244, 114, 182, 0.18); color: #f472b6; padding: 4px 10px; border-radius: 8px; font-weight: 600; }
+
+/* ===== Passos de Tratamento ===== */
 .step-container {
-    display: flex;
-    gap: 16px;
-    margin-bottom: 1rem;
-    background: #fdfdfd;
-    border: 1px solid #f1f5f9;
-    border-radius: 12px;
-    padding: 1rem;
+  display: flex;
+  gap: 16px;
+  margin-bottom: 1rem;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 1.1rem;
+  transition: all 0.2s ease;
+}
+
+.step-container:hover {
+  border-color: var(--border-glow);
 }
 
 .step-number {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 38px;
-    height: 38px;
-    background-color: #2d6a4f;
-    color: #ffffff;
-    font-weight: 700;
-    border-radius: 50%;
-    font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 38px;
+  height: 38px;
+  background: var(--gradient);
+  color: #ffffff;
+  font-weight: 700;
+  border-radius: 50%;
+  font-size: 0.95rem;
+  box-shadow: 0 4px 12px rgba(167, 139, 250, 0.35);
 }
 
 .step-content {
-    flex: 1;
+  flex: 1;
 }
 
 .step-title {
-    font-weight: 700;
-    color: #1e293b;
-    font-size: 1rem;
-    margin-bottom: 4px;
+  font-weight: 700;
+  color: var(--text);
+  font-size: 1rem;
+  margin-bottom: 4px;
 }
 
 .step-desc {
-    color: #475569;
-    font-size: 0.92rem;
-    line-height: 1.5;
+  color: var(--text-muted);
+  font-size: 0.92rem;
+  line-height: 1.5;
 }
 
-/* Alerta de Transparência */
+/* Callout de Transparência */
 .transparency-callout {
-    background-color: #f0fdf4;
-    border-left: 4px solid #2d6a4f;
-    padding: 1rem 1.25rem;
-    border-radius: 0 10px 10px 0;
-    font-size: 0.9rem;
-    color: #166534;
-    margin-top: 1.5rem;
+  background: rgba(167, 139, 250, 0.08);
+  border-left: 4px solid var(--primary);
+  padding: 1rem 1.3rem;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  font-size: 0.9rem;
+  color: var(--primary-light);
+  margin-top: 1.5rem;
 }
 
-/* Indicador de Gravidade */
-.severity-pill-nenhuma { background: #dcfce7; color: #166534; padding: 4px 10px; border-radius: 6px; font-weight: 600; }
-.severity-pill-baixa { background: #dbeafe; color: #1e40af; padding: 4px 10px; border-radius: 6px; font-weight: 600; }
-.severity-pill-média { background: #fef3c7; color: #92400e; padding: 4px 10px; border-radius: 6px; font-weight: 600; }
-.severity-pill-alta { background: #ffedd5; color: #c2410c; padding: 4px 10px; border-radius: 6px; font-weight: 600; }
-.severity-pill-crítica { background: #fee2e2; color: #991b1b; padding: 4px 10px; border-radius: 6px; font-weight: 600; }
-
-/* Botões do Streamlit com tom natural */
+/* ===== Botões Pill Estilo Nova ===== */
 .stButton > button {
-    border-radius: 10px !important;
-    font-weight: 600 !important;
-    transition: all 0.2s ease !important;
+  border-radius: 999px !important;
+  font-weight: 600 !important;
+  font-size: 0.94rem !important;
+  padding: 0.6rem 1.4rem !important;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  border: 1px solid var(--border) !important;
+  background: rgba(255, 255, 255, 0.04) !important;
+  color: var(--text) !important;
+}
+
+.stButton > button:hover {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border-color: var(--border-glow) !important;
+  transform: translateY(-2px) !important;
 }
 
 .stButton > button[kind="primary"] {
-    background-color: #2d6a4f !important;
-    border-color: #2d6a4f !important;
-    color: #ffffff !important;
-    box-shadow: 0 4px 12px rgba(45, 106, 79, 0.25) !important;
+  background: var(--gradient) !important;
+  border: none !important;
+  color: #ffffff !important;
+  box-shadow: 0 6px 20px rgba(167, 139, 250, 0.35) !important;
 }
 
 .stButton > button[kind="primary"]:hover {
-    background-color: #1b4332 !important;
-    border-color: #1b4332 !important;
-    transform: translateY(-1px);
-    box-shadow: 0 6px 16px rgba(27, 67, 50, 0.35) !important;
+  transform: translateY(-2px) scale(1.02) !important;
+  box-shadow: 0 10px 30px rgba(167, 139, 250, 0.55) !important;
+  filter: brightness(1.08);
 }
 
-/* ==========================================
-   Widget Flutuante de Chat no Canto Inferior Direito
-   ========================================== */
+/* Inputs e Selectboxes Dark Mode */
+.stTextInput > div > div > input,
+.stSelectbox > div > div,
+.stTextArea textarea {
+  background-color: var(--bg-elevated) !important;
+  border: 1px solid var(--border) !important;
+  color: var(--text) !important;
+  border-radius: 12px !important;
+}
+
+.stTextInput > div > div > input:focus,
+.stTextArea textarea:focus {
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 0 2px rgba(167, 139, 250, 0.25) !important;
+}
+
+/* Expanders Glassmorphic */
+[data-testid="stExpander"] {
+  background: var(--bg-card) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius-sm) !important;
+  overflow: hidden;
+}
+
+/* ===== Widget Flutuante de Chat no Canto Inferior Direito ===== */
 div[data-testid="stPopover"] {
-    position: fixed !important;
-    bottom: 24px !important;
-    right: 24px !important;
-    z-index: 999990 !important;
+  position: fixed !important;
+  bottom: 24px !important;
+  right: 24px !important;
+  z-index: 999990 !important;
 }
 
 div[data-testid="stPopover"] > button {
-    background: linear-gradient(135deg, #1b4332 0%, #2d6a4f 100%) !important;
-    color: #ffffff !important;
-    border: 2px solid #52b788 !important;
-    border-radius: 9999px !important;
-    padding: 10px 22px !important;
-    font-weight: 700 !important;
-    font-size: 0.95rem !important;
-    letter-spacing: 0.01em !important;
-    box-shadow: 0 6px 20px rgba(27, 67, 50, 0.4) !important;
-    display: inline-flex !important;
-    align-items: center !important;
-    gap: 8px !important;
-    cursor: pointer !important;
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  background: var(--gradient) !important;
+  color: #ffffff !important;
+  border: none !important;
+  border-radius: 9999px !important;
+  padding: 12px 24px !important;
+  font-family: 'Space Grotesk', sans-serif !important;
+  font-weight: 700 !important;
+  font-size: 0.98rem !important;
+  letter-spacing: 0.01em !important;
+  box-shadow: 0 8px 30px rgba(167, 139, 250, 0.45) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  cursor: pointer !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
 div[data-testid="stPopover"] > button:hover {
-    background: linear-gradient(135deg, #2d6a4f 0%, #40916c 100%) !important;
-    border-color: #a7f3d0 !important;
-    transform: translateY(-3px) scale(1.04) !important;
-    box-shadow: 0 10px 28px rgba(27, 67, 50, 0.5) !important;
+  transform: translateY(-3px) scale(1.05) !important;
+  box-shadow: 0 12px 36px rgba(167, 139, 250, 0.65) !important;
+  filter: brightness(1.1);
 }
 
-/* Janela do Popover (Corpo do Chat) */
+/* Janela do Popover (Corpo do Chat Dark Nova) */
 div[data-testid="stPopoverBody"] {
-    width: 400px !important;
-    max-width: calc(100vw - 36px) !important;
-    max-height: 600px !important;
-    border-radius: 20px !important;
-    border: 1.5px solid #86efac !important;
-    box-shadow: 0 16px 45px rgba(0, 0, 0, 0.22) !important;
-    padding: 16px !important;
-    background: #ffffff !important;
-    overflow-y: auto !important;
+  width: 410px !important;
+  max-width: calc(100vw - 36px) !important;
+  max-height: 610px !important;
+  border-radius: 24px !important;
+  border: 1.5px solid var(--border-glow) !important;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6) !important;
+  padding: 18px !important;
+  background: #12121a !important;
+  overflow-y: auto !important;
+  backdrop-filter: blur(20px) !important;
 }
 
-/* Responsividade móvel para o chat */
+/* Mensagens de Chat Estilo Nova */
+[data-testid="stChatMessage"] {
+  background: var(--bg-card) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 18px !important;
+  padding: 10px 14px !important;
+  margin-bottom: 8px !important;
+}
+
+/* Chips de Sugestão */
+.chat-suggestion-chip {
+  background: rgba(167, 139, 250, 0.08);
+  border: 1px solid rgba(167, 139, 250, 0.2);
+  color: var(--primary-light);
+  border-radius: 999px;
+  padding: 4px 12px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  display: inline-block;
+  margin: 3px;
+  transition: all 0.2s ease;
+}
+
+.chat-suggestion-chip:hover {
+  background: rgba(167, 139, 250, 0.18);
+  border-color: var(--primary);
+  transform: translateY(-1px);
+}
+
+/* Responsividade móvel */
 @media (max-width: 640px) {
-    div[data-testid="stPopover"] {
-        bottom: 16px !important;
-        right: 16px !important;
-    }
-    div[data-testid="stPopover"] > button {
-        padding: 8px 16px !important;
-        font-size: 0.88rem !important;
-    }
-    div[data-testid="stPopoverBody"] {
-        width: calc(100vw - 32px) !important;
-        right: 16px !important;
-        max-height: 75vh !important;
-    }
+  div[data-testid="stPopover"] {
+    bottom: 16px !important;
+    right: 16px !important;
+  }
+  div[data-testid="stPopover"] > button {
+    padding: 10px 18px !important;
+    font-size: 0.9rem !important;
+  }
+  div[data-testid="stPopoverBody"] {
+    width: calc(100vw - 32px) !important;
+    right: 16px !important;
+    max-height: 75vh !important;
+  }
 }
 </style>
 """
