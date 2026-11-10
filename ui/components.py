@@ -258,7 +258,7 @@ if(av){{
 </body>
 </html>"""
 
-    height = 268 if show_avatar else 168
+    height = 380 if show_avatar else 180
     components.html(hero_html, height=height, scrolling=False)
 
 def render_metric_cards(
