@@ -440,73 +440,124 @@ body{{
 
 def render_home_info_cards():
     """
-    Renderiza os dois cards informativos da home ('Como Funciona' + 'Dicas')
-    com fade-in e hover animados via components.v1.html.
+    Renderiza os cartões informativos da home com design moderno,
+    contraste perfeito, ícones destacados e altura expandida para evitar cortes.
     """
     html = """<!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8"/>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@700;800&display=swap" rel="stylesheet"/>
 <style>
-*{{margin:0;padding:0;box-sizing:border-box}}
-body{{font-family:'Inter',sans-serif;background:transparent;padding:4px 2px 6px}}
-.grid{{display:grid;grid-template-columns:1.6fr 1fr;gap:16px;align-items:start}}
-.card{{
-  background:#16161f;
-  border:1px solid rgba(255,255,255,0.07);
-  border-radius:20px;padding:1.5rem 1.6rem;
-  opacity:0;transform:translateY(18px);
-  animation:fadeUp .55s ease var(--d,0s) forwards;
-  transition:transform .3s ease,border-color .3s ease,box-shadow .3s ease;
-  position:relative;overflow:hidden;
-}}
-.card::after{{
-  content:'';position:absolute;inset:0;border-radius:20px;
-  background:var(--accent-bg,rgba(167,139,250,.04));
-  opacity:0;transition:opacity .3s;
-}}
-.card:hover{{transform:translateY(-5px);border-color:var(--accent,rgba(167,139,250,.35));box-shadow:0 14px 36px var(--glow,rgba(167,139,250,.12))}}
-.card:hover::after{{opacity:1}}
-.card-title{{
-  font-family:'Space Grotesk',sans-serif;font-size:1.05rem;font-weight:700;
-  color:#f1f5f9;margin-bottom:.9rem;padding-bottom:.7rem;
-  border-bottom:1px solid rgba(255,255,255,.07);
-  display:flex;align-items:center;gap:.5rem;
-}}
-.card-title .icon{{font-size:1.15rem}}
-p{{color:#64748b;font-size:.88rem;line-height:1.65;position:relative;z-index:1}}
-ul{{color:#64748b;font-size:.87rem;line-height:1.75;padding-left:0;list-style:none;position:relative;z-index:1}}
-ul li{{padding-left:1rem;position:relative;margin-bottom:.25rem}}
-ul li::before{{content:'›';position:absolute;left:0;color:#a78bfa;font-weight:700}}
-ul li b{{color:#c4b5fd}}
-.tip{{margin-bottom:.6rem;position:relative;z-index:1;display:flex;gap:.5rem;font-size:.87rem;color:#64748b;line-height:1.5}}
-.tip b{{color:#38bdf8}}
-.tip-icon{{flex-shrink:0;font-size:1rem}}
-@keyframes fadeUp{{from{{opacity:0;transform:translateY(18px)}}to{{opacity:1;transform:translateY(0)}}}}
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:'Inter',sans-serif;
+  background:transparent;
+  padding:6px 4px 14px;
+  color:#f1f5f9;
+}
+.grid{
+  display:grid;
+  grid-template-columns:1.5fr 1fr;
+  gap:18px;
+  align-items:start;
+}
+.card{
+  background:linear-gradient(145deg, rgba(22,22,31,0.95), rgba(14,14,22,0.98));
+  border:1px solid rgba(167,139,250,0.18);
+  border-radius:22px;
+  padding:1.6rem 1.8rem;
+  box-shadow:0 15px 35px rgba(0,0,0,0.4);
+  position:relative;
+  overflow:hidden;
+  transition:transform .3s ease, border-color .3s ease, box-shadow .3s ease;
+}
+.card:hover{
+  transform:translateY(-4px);
+  border-color:rgba(167,139,250,0.4);
+  box-shadow:0 20px 45px rgba(167,139,250,0.15);
+}
+.card-title{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:1.15rem;
+  font-weight:700;
+  color:#ffffff;
+  margin-bottom:1rem;
+  padding-bottom:0.7rem;
+  border-bottom:1px solid rgba(255,255,255,0.08);
+  display:flex;
+  align-items:center;
+  gap:0.6rem;
+}
+.card-title .icon{font-size:1.25rem}
+p{
+  color:#94a3b8;
+  font-size:0.92rem;
+  line-height:1.65;
+  margin-bottom:0.8rem;
+}
+ul{
+  color:#94a3b8;
+  font-size:0.9rem;
+  line-height:1.75;
+  padding-left:0;
+  list-style:none;
+}
+ul li{
+  padding-left:1.2rem;
+  position:relative;
+  margin-bottom:0.4rem;
+}
+ul li::before{
+  content:'›';
+  position:absolute;
+  left:0;
+  color:#a78bfa;
+  font-weight:800;
+  font-size:1.1rem;
+}
+ul li b{
+  color:#c4b5fd;
+}
+.tip{
+  margin-bottom:0.8rem;
+  display:flex;
+  gap:0.7rem;
+  font-size:0.9rem;
+  color:#94a3b8;
+  line-height:1.55;
+  background:rgba(255,255,255,0.02);
+  padding:0.6rem 0.8rem;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,0.04);
+}
+.tip b{color:#38bdf8}
+.tip-icon{flex-shrink:0;font-size:1.1rem}
 </style>
 </head>
 <body>
 <div class="grid">
-  <div class="card" style="--d:0s;--accent:rgba(167,139,250,.4);--glow:rgba(167,139,250,.12)">
-    <div class="card-title"><span class="icon">🔍</span> Como Funciona a Assistente Inteligente</div>
-    <p style="margin-bottom:.8rem">O <b style="color:#c4b5fd">PlantCare AI</b> combina duas camadas de IA para máxima precisão diagnóstica:</p>
+  <div class="card">
+    <div class="card-title"><span class="icon">🔍</span> Como Funciona a Assistente</div>
+    <p>O <b style="color:#c4b5fd">PlantCare AI</b> combina tecnologia de ponta para máxima precisão:</p>
     <ul>
-      <li><b>Classificador Local (Teachable Machine):</b> Avalia padrões visuais em milissegundos, identificando sinais de alerta imediatamente.</li>
-      <li><b>Raciocínio Botânico (Google Gemini):</b> Analisa a foto em alta definição, identifica a espécie, investiga causas e gera o plano de tratamento.</li>
-      <li><b>Diferenciação Científica:</b> Separa sintomas de causas reais sem suposições precipitadas — diagnóstico responsável.</li>
+      <li><b>Classificador Local:</b> Avalia padrões visuais em milissegundos via Teachable Machine.</li>
+      <li><b>Raciocínio Botânico:</b> Analisa a foto em alta definição através do Google Gemini.</li>
+      <li><b>Diferenciação Científica:</b> Separa sintomas visuais de causas reais de forma responsável.</li>
     </ul>
   </div>
-  <div class="card" style="--d:.12s;--accent:rgba(56,189,248,.4);--glow:rgba(56,189,248,.1);--accent-bg:rgba(56,189,248,.03)">
+  <div class="card">
     <div class="card-title" style="color:#38bdf8"><span class="icon">💡</span> Dicas Botânicas</div>
-    <div class="tip"><span class="tip-icon">💧</span><span><b>Drenagem é vida:</b> Mais plantas morrem por excesso de rega do que por sede. Cheque o solo antes de regar.</span></div>
-    <div class="tip"><span class="tip-icon">☀️</span><span><b>Observe a luz:</b> Luz indireta brilhante é ideal para a maioria das folhagens domésticas.</span></div>
-    <div class="tip"><span class="tip-icon">✂️</span><span><b>Poda profilática:</b> Remova folhas doentes com tesoura esterilizada para proteger os galhos sadios.</span></div>
+    <div class="tip"><span class="tip-icon">💧</span><span><b>Drenagem:</b> Excesso de rega mata mais do que a seca. Cheque o solo.</span></div>
+    <div class="tip"><span class="tip-icon">☀️</span><span><b>Luminosidade:</b> Luz indireta brilhante é ideal para folhagens.</span></div>
+    <div class="tip"><span class="tip-icon">✂️</span><span><b>Sanidade:</b> Remova folhas doentes com tesoura esterilizada.</span></div>
   </div>
 </div>
 </body>
 </html>"""
-    components.html(html, height=240, scrolling=False)
+    
+    # Altura expandida para 320 pixels para garantir que nenhum texto fique cortado embaixo
+    components.html(html, height=320, scrolling=False)
 
 
 def render_quality_audit(audit: Dict[str, Any]):
